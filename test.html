@@ -1,0 +1,325 @@
+
+<!-- Developer By CMSNT.CO | FB.COM/CMSNT.CO | ZALO.ME/0947838128 | MMO Solution -->
+<!doctype html>
+<html class="h-100">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <link rel="canonical" href="https://zshopclone7.cmsnt.net/client/profile" />
+    <title>Profile | DEMO SHOPCLONE7</title>
+    <meta name="description" content="Hệ thống bán nguyên liệu ADS tự động, uy tín, giá rẻ..." />
+    <meta name="keywords" content="">
+    <meta name="copyright" content="CMSNT.CO" />
+    <meta name="author" content="CMSNT.CO" />
+    <meta property="og:url" content="https://zshopclone7.cmsnt.net/">
+    <meta property="og:site_name" content="https://zshopclone7.cmsnt.net/" />
+    <meta property="og:title" content="Profile | DEMO SHOPCLONE7" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image"
+        content="https://zshopclone7.cmsnt.net/assets/storage/images/image_IYA.png" />
+    <meta property="og:image:secure"
+        content="https://zshopclone7.cmsnt.net/assets/storage/images/image_IYA.png" />
+    <meta name="twitter:title" content="Profile | DEMO SHOPCLONE7" />
+    <meta name="twitter:image"
+        content="https://zshopclone7.cmsnt.net/assets/storage/images/image_IYA.png" />
+    <meta name="twitter:image:alt" content="Profile | DEMO SHOPCLONE7" />
+    <link rel="icon" type="image/png" href="https://zshopclone7.cmsnt.net/assets/storage/images/favicon_JEI.png" />
+    <style>
+    :root {
+        --primary: #eac923;
+    }
+    </style>
+    <style>
+    :root {
+        --primary1: #d2a510;
+    }
+    </style>
+
+    <link rel="stylesheet" href="https://zshopclone7.cmsnt.net/public/client/vendor/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="https://zshopclone7.cmsnt.net/public/client/css/main.css">
+
+
+    <!-- jQuery -->
+    <script src="https://zshopclone7.cmsnt.net/public/js/jquery-3.6.0.js"></script>
+
+
+
+<link href="https://fonts.googleapis.com/css2?family=Saira+Semi+Condensed:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://zshopclone7.cmsnt.net/mod/css/main.css?v=14">
+
+</head>
+
+<script>
+function showMessage(message, type) {
+  const commonOptions = {
+    effect: 'fade',
+    speed: 300,
+    customClass: null,
+    customIcon: null,
+    showIcon: true,
+    showCloseButton: true,
+    autoclose: true,
+    autotimeout: 3000,
+    gap: 20,
+    distance: 20,
+    type: 'outline',
+    position: 'right top'
+  };
+
+  const options = {
+    success: {
+      status: 'success',
+      title: 'Thành công!',
+      text: message,
+    },
+    error: {
+      status: 'error',
+      title: 'Thất bại!',
+      text: message,
+    }
+  };
+  new Notify(Object.assign({}, commonOptions, options[type]));
+}
+
+</script>
+
+<style>
+body {
+    font-family: 'Saira Semi Condensed', sans-serif;}
+html {
+  scroll-behavior: smooth;
+}
+
+.feature-content {
+    padding-left: 0px;
+    border-left: none;
+}
+.product-disable::before {
+    position: absolute;
+    content: "Hết hàng";
+    top: 89%;
+    left: 50%;
+    z-index: 2;
+    width: 100%;
+    font-size: 15px;
+    font-weight: 400;
+    padding: 0px;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: var(--primary-tshadow);
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    color: var(--white);
+    background: rgba(224, 152, 22, 0.9);
+}
+</style>
+
+
+ 
+<body>
+    <div class="backdrop"></div><a class="backtop" href="#"><i class="fa-sharp fa-solid fa-chevron-up"></i></a>
+<section class="py-5 inner-section profile-part">
+    <div class="container">
+        <div class="row content-reverse">
+            <div class="col-lg-3">
+                
+<a class="sidebar_profile mobile-menu-active" href="https://zshopclone7.cmsnt.net/client/profile">
+    <h6><i class="fas fa-user"></i> <span>Thông tin cá nhân</span></h6>
+</a>
+<a class="sidebar_profile " href="https://zshopclone7.cmsnt.net/client/security">
+    <h6><i class="fa-solid fa-shield-halved"></i> <span>Bảo mật</span></h6>
+</a>
+<a class="sidebar_profile " href="https://zshopclone7.cmsnt.net/?action=logs">
+    <h6><i class="fa fa-history" aria-hidden="true"></i> <span>Nhật ký hoạt động</span></h6>
+</a>
+<a class="sidebar_profile " href="https://zshopclone7.cmsnt.net/?action=transactions">
+    <h6><i class="fa-solid fa-wallet"></i> <span>Biến động số dư</span></h6>
+</a>
+<a class="sidebar_profile " href="https://zshopclone7.cmsnt.net/client/change-password">
+    <h6><i class="fa fa-key" aria-hidden="true"></i> <span>Thay đổi mật khẩu</span></h6>
+</a>
+<a class="sidebar_profile" onclick="logout()" href="javascript:void(0)">
+    <h6><i class="fa-solid fa-right-from-bracket"></i> <span>Đăng Xuất</span></h6>
+</a>
+
+            </div>
+            <div class="col-lg-9">
+                <div class="row">
+
+                    <div class="col-lg-12">
+                        <div class="account-card">
+                            <h4 class="account-title">Ví của tôi</h4>
+                            <div class="my-wallet">
+                                <p>Số dư hiện tại</p>
+                                <h3>10.000.000đ</h3>
+                            </div>
+                            <div class="wallet-card-group">
+                                <div class="wallet-card">
+                                    <p>Tổng tiền nạp</p>
+                                    <h3>10.000.000đ</h3>
+                                </div>
+                                <div class="wallet-card">
+                                    <p>Số dư đã sử dụng</p>
+                                    <h3>0đ</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                    <div class="account-card">
+                        <div class="account-title">
+                            <h4>Hồ sơ của bạn</h4>
+                            <button data-bs-toggle="modal"
+                                data-bs-target="#profile-edit">Chỉnh sửa thông tin</button>
+                        </div>
+                        <div class="account-content">
+                            <div class="row">
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Tên đăng nhập</label>
+                                        <input type="text" class="form-control" value="admin"
+                                            readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Địa chỉ Email</label>
+                                        <input type="email" class="form-control" placeholder="Enter your email.."
+                                            value="admin@cmsnt.co" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group"><label class="form-label">Số điện thoại</label>
+                                        <input type="text" class="form-control" value="0999888222"
+                                            readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group"><label class="form-label">Họ và Tên</label>
+                                        <input type="text" class="form-control" value="NTThanh"
+                                            readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group"><label
+                                            class="form-label">Telegram Chat ID</label>
+                                        <input type="text" class="form-control"
+                                            value="" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group"><label class="form-label">Địa chỉ IP</label>
+                                        <input type="text" class="form-control" value="222.253.144.157" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group"><label class="form-label">Thiết bị</label>
+                                        <input type="text" class="form-control" value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0"
+                                            readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group"><label
+                                            class="form-label">Đăng ký vào lúc</label>
+                                        <input type="text" class="form-control" value="2022-04-28 19:52:56"
+                                            readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group"><label
+                                            class="form-label">Đăng nhập gần nhất</label>
+                                        <input type="text" class="form-control" value="2022-04-28 19:52:56"
+                                            readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="profile-edit">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content"><button class="modal-close" data-bs-dismiss="modal"><i
+                    class="icofont-close"></i></button>
+            <form class="modal-form">
+                <div class="form-title">
+                    <h3>Chỉnh sửa thông tin</h3>
+                </div>
+                <div class="form-group"><label class="form-label">Số điện thoại</label>
+                    <input type="hidden" class="form-control" value="POyLKf3pegBiV0lGDojThEXrQYH185AqmaRdZxM2nzc7WJ6kUwuCbIS4vstN91710434385bd4511329cdd615a183c9fcd3cc55068" id="token">
+                    <input type="text" class="form-control" value="0999888222" id="phone">
+                </div>
+                <div class="form-group"><label class="form-label">Họ và Tên</label>
+                    <input type="text" class="form-control" value="NTThanh" id="fullname">
+                </div>
+                <div class="form-group"><label class="form-label">Telegram Chat ID</label>
+                    <input type="text" class="form-control" value=""
+                        id="telegram_chat_id">
+                </div>
+                <button class="form-btn" id="btnSaveProfile" type="button">Lưu</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$("#btnSaveProfile").on("click", function() {
+    $('#btnSaveProfile').html('<i class="fa fa-spinner fa-spin"></i> Processing...')
+        .prop('disabled',
+            true);
+    $.ajax({
+        url: "https://zshopclone7.cmsnt.net/ajaxs/client/auth.php",
+        method: "POST",
+        dataType: "JSON",
+        data: {
+            action: 'ChangeProfile',
+            token: $("#token").val(),
+            phone: $("#phone").val(),
+            fullname: $("#fullname").val(),
+            telegram_chat_id: $("#telegram_chat_id").val()
+        },
+        success: function(respone) {
+            if (respone.status == 'success') {
+                Swal.fire('Successful!', respone.msg, 'success');
+            } else {
+                Swal.fire('Failure!', respone.msg, 'error');
+            }
+            $('#btnSaveProfile').html(
+                'Lưu'
+            ).prop('disabled',
+                false);
+        },
+        error: function() {
+            showMessage('Không thể xử lý', 'error');
+            $('#btnSaveProfile').html(
+                'Lưu'
+            ).prop('disabled',
+                false);
+        }
+
+    });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>

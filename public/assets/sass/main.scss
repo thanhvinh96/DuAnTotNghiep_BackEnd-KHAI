@@ -1,0 +1,146 @@
+// abstract
+@import "abstracts/index";
+// Component
+@import "components/index";
+// utilities
+@import "utilities/index";
+// Module
+@import "layout/index";
+// All partials
+@import "partials/index";
+* {
+  font-family: 'Signika', sans-serif;
+}
+// Extra styles for product card
+.product-card__thumb {
+    width: 100%; /* Đảm bảo khung chứa hình ảnh chiếm 100% chiều rộng */
+    height: 200px; /* Đặt chiều cao cố định cho khung */
+    overflow: hidden; /* Ẩn phần thừa của hình ảnh nếu có */
+    display: flex; /* Sử dụng flexbox để căn chỉnh hình ảnh */
+    align-items: center; /* Căn giữa hình ảnh theo chiều dọc */
+    justify-content: center; /* Căn giữa hình ảnh theo chiều ngang */
+    
+    img {
+        width: auto; /* Tự động chiều rộng */
+        height: 100%; /* Chiếm hết chiều cao của khung */
+        object-fit: cover; /* Đảm bảo hình ảnh được cắt và không bị biến dạng */
+    }
+}
+/* Định nghĩa lớp cho thanh kéo */
+.horizontal-slider {
+    width: 100%; /* Đặt chiều rộng của thanh kéo */
+  }
+  
+  /* Định nghĩa lớp cho track của thanh kéo */
+  .example-track {
+    background: #FA6400; /* Màu của track */
+    height: 6px; /* Chiều cao của track */
+    border-radius: 5px; /* Bo góc cho track */
+  }
+  
+  /* Định nghĩa lớp cho thumb của thanh kéo */
+  .example-thumb {
+    height: 30px; /* Chiều cao của thumb */
+    width: 30px; /* Chiều rộng của thumb */
+    background: #ffffff; /* Màu nền của thumb */
+    border: 2px solid #FA6400; /* Màu viền cho thumb */
+    border-radius: 5px; /* Bo góc nhẹ */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -12px; /* Để đưa thumb lên giữa track */
+    border: none;
+  }
+  
+  /* Thay đổi màu sắc thumb khi hover */
+  .example-thumb:hover {
+    background: #FA6400; /* Màu nền thumb khi hover */
+    border: 2px solid #ffffff; /* Màu viền thumb khi hover */
+  }
+  .price-range-labels-price{
+    margin-top: 50px;
+  }
+  .slick-slider {
+    height: auto; /* Hoặc thiết lập chiều cao cố định nếu cần */
+}
+.profile-part{
+  margin-top: 20px;
+}
+/* Custom Modal Style */
+.custom-modal {
+  background-color: rgba(0, 0, 0, 0.5); /* Làm mờ nền phía sau modal */
+}
+
+.custom-modal-dialog {
+  max-width: 500px; /* Giới hạn kích thước modal */
+}
+
+.modal-content {
+  background-color: #f8f9fa; /* Màu nền sáng */
+  border-radius: 20px; /* Bo tròn góc modal */
+  overflow: hidden;
+}
+
+.modal-header {
+  background-color: #007bff; /* Màu nền header modal */
+  color: white; /* Màu chữ trắng */
+  padding: 15px;
+  border-bottom: none;
+}
+
+.modal-body {
+  padding: 20px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.modal-footer {
+  background-color: #f1f1f1; /* Màu nền cho footer */
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.close {
+  color: white;
+  opacity: 1;
+}
+table {
+  border: none;
+  width: 100%; /* Chiếm toàn bộ chiều rộng */
+  border-collapse: collapse; /* Xóa khoảng cách giữa các ô */
+}
+
+// th, td {
+//   padding: 20px; /* Đặt padding cho các ô */
+//   color: white;
+
+// }
+// .css-1zts0j {
+ 
+//   color: #ffffff;
+ 
+.custom-modal-header {
+  background-color: #FA6800; /* Màu nền bạn muốn */
+  color: white; /* Màu chữ */
+}
