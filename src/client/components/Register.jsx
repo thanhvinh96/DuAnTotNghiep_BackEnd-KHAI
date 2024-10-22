@@ -8,10 +8,9 @@ const Register = () => {
         Email: '',
         PhoneNumber: '',
         Password: '',
-        Address: 'Giá trị test',
-        Role: 'Client',
-        status: 'active',
     });
+
+    const [errors, setErrors] = useState({}); // State để lưu trữ thông báo lỗi
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -19,12 +18,46 @@ const Register = () => {
             ...prevData,
             [id]: value,
         }));
+
+        // Xóa lỗi khi người dùng bắt đầu nhập lại
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [id]: '', // Xóa thông báo lỗi tương ứng
+        }));
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(formData);
+    const validateForm = () => {
+        const newErrors = {};
+        if (!formData.Username) {
+            newErrors.Username = 'Họ tên là bắt buộc.';
+        }
+        if (!formData.Email) {
+            newErrors.Email = 'Email là bắt buộc.';
+        } else if (!/\S+@\S+\.\S+/.test(formData.Email)) {
+            newErrors.Email = 'Email không hợp lệ.';
+        }
+        if (!formData.PhoneNumber) {
+            newErrors.PhoneNumber = 'Số điện thoại là bắt buộc.';
+        } else if (!/^\d+$/.test(formData.PhoneNumber)) {
+            newErrors.PhoneNumber = 'Số điện thoại không hợp lệ.';
+        }
+        if (!formData.Password) {
+            newErrors.Password = 'Mật khẩu là bắt buộc.';
+        } else if (formData.Password.length < 6) {
+            newErrors.Password = 'Mật khẩu phải có ít nhất 6 ký tự.';
+        }
 
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0; // Trả về true nếu không có lỗi
+    };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!validateForm()) {
+            return; // Không tiếp tục nếu có lỗi
+        }
+    
+        console.log(formData);
+    
         fetch('http://localhost:3000/api/user/', {
             method: 'POST',
             headers: {
@@ -34,22 +67,32 @@ const Register = () => {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Success:', data);
-            Swal.fire({
-                title: 'Thành Công',
-                text: 'Đăng ký thành công!',
-                icon: 'success',
-                confirmButtonText: 'Đóng',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Chuyển hướng đến trang đăng nhập
-                    window.location.href = '/login'; // Đường dẫn đến trang đăng nhập
-                }
-            });
+            if (data.status === true) {
+                console.log('Success:', data);
+                Swal.fire({
+                    title: 'Thành Công',
+                    text: 'Đăng ký thành công!',
+                    icon: 'success',
+                    confirmButtonText: 'Đóng',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Chuyển hướng đến trang đăng nhập
+                        window.location.href = '/login'; // Đường dẫn đến trang đăng nhập
+                    }
+                });
+            } else {
+                // Xử lý trường hợp thất bại
+                Swal.fire({
+                    title: 'Thất Bại',
+                    text: data.message || 'Đăng ký thất bại! Vui lòng thử lại.', // Hiển thị thông điệp từ server nếu có
+                    icon: 'error',
+                    confirmButtonText: 'Đóng',
+                });
+            }
         })
         .catch((error) => {
             console.error('Error:', error);
-            Swal.fire({ // Sử dụng SweetAlert2 để hiển thị thông báo lỗi
+            Swal.fire({
                 title: 'Thất Bại',
                 text: 'Đăng ký thất bại! Vui lòng thử lại.',
                 icon: 'error',
@@ -57,6 +100,7 @@ const Register = () => {
             });
         });
     };
+    
 
     return (
         <section className="account py-80">
@@ -73,13 +117,13 @@ const Register = () => {
                                     </label>
                                     <input
                                         type="text"
-                                        className="common-input"
+                                        className={`common-input ${errors.Username ? 'is-invalid' : ''}`}
                                         id="Username"
                                         onChange={handleChange}
                                         value={formData.Username}
-
                                         placeholder="Nhập Họ Và Tên"
                                     />
+                                    {errors.Username && <div className="text-danger">{errors.Username}</div>}
                                 </div>
 
                                 <div className="mb-24">
@@ -88,12 +132,13 @@ const Register = () => {
                                     </label>
                                     <input
                                         type="email"
-                                        className="common-input"
+                                        className={`common-input ${errors.Email ? 'is-invalid' : ''}`}
                                         id="Email"
                                         onChange={handleChange}
                                         placeholder="Nhập Email"
                                         value={formData.Email}
                                     />
+                                    {errors.Email && <div className="text-danger">{errors.Email}</div>}
                                 </div>
 
                                 <div className="mb-24">
@@ -102,12 +147,13 @@ const Register = () => {
                                     </label>
                                     <input
                                         type="text"
-                                        className="common-input"
+                                        className={`common-input ${errors.PhoneNumber ? 'is-invalid' : ''}`}
                                         id="PhoneNumber"
                                         onChange={handleChange}
                                         placeholder="Nhập Phone"
                                         value={formData.PhoneNumber}
                                     />
+                                    {errors.PhoneNumber && <div className="text-danger">{errors.PhoneNumber}</div>}
                                 </div>
 
                                 <div className="mb-24">
@@ -117,7 +163,7 @@ const Register = () => {
                                     <div className="position-relative">
                                         <input
                                             type="password"
-                                            className="common-input"
+                                            className={`common-input ${errors.Password ? 'is-invalid' : ''}`}
                                             id="Password"
                                             onChange={handleChange}
                                             placeholder="Nhập Mật Khẩu"
@@ -128,6 +174,7 @@ const Register = () => {
                                             id="#Password"
                                         />
                                     </div>
+                                    {errors.Password && <div className="text-danger">{errors.Password}</div>}
                                 </div>
 
                                 <div className="mb-24 mt-48">
@@ -136,8 +183,8 @@ const Register = () => {
                                             Đăng Ký
                                         </button>
                                         <Link to="/login" className="btn btn-secondary py-18 px-40">
-            Đăng Nhập
-        </Link>
+                                            Đăng Nhập
+                                        </Link>
                                     </div>
                                 </div>
 

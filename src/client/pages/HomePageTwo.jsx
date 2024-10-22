@@ -4,6 +4,7 @@ import HeaderTwo from "../components/HeaderTwo";
 import BannerTwo from "../components/BannerTwo";
 import PromotionalTwo from "../components/PromotionalTwo";
 import DealsOne from "../components/DealsOne";
+import DealsCategory from "../components/DealsCategory";
 import TopSellingOne from "../components/TopSellingOne";
 import TrendingOne from "../components/TrendingOne";
 import DiscountOne from "../components/DiscountOne";
@@ -49,6 +50,7 @@ const HomePageTwo = () => {
 
       {/* DealsOne */}
       <DealsOne />
+      <DealsCategory />
 
       {/* TopSellingOne */}
       {/* <TopSellingOne /> */}

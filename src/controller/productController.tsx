@@ -11,6 +11,14 @@ export class ProductController {
             throw error; // Ném lỗi ra ngoài để xử lý
         }
     }
+    static async getProductCategory(): Promise<any>{
+        try {
+            return await ProductService.getProductCategory(); // Gọi tới dịch vụ lấy tất cả sản phẩm
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            throw error; // Ném lỗi ra ngoài để xử lý
+        }
+    }
 
     // Hàm để tạo sản phẩm mới
     static async createProduct(newProduct: Product): Promise<Product> {
@@ -51,7 +59,17 @@ export class ProductController {
             throw error; // Ném lỗi ra ngoài để xử lý
         }
     }
-
+    static async updateProductStatus(id: string, newStatus: string): Promise<string> {
+        try {
+            await ProductService.updateProductStatus(id, newStatus); // Gọi tới dịch vụ để cập nhật status sản phẩm
+            return 'Product status updated successfully'; // Trả về thông báo thành công
+        } catch (error) {
+            console.error('Error updating product status:', error);
+            return 'Failed to update product status'; // Trả về thông báo thất bại
+        }
+    }
+    
+    
     static async getProductNew():Promise<Product>{
         try {
             return await ProductService.getProductNew(); // Gọi tới dịch vụ lấy tất cả sản phẩm

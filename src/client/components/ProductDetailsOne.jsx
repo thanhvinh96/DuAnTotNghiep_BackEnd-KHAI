@@ -339,7 +339,7 @@ const ProductDetailsOne = () => {
                         </div>
                     </div>
                 </div>
-                <div className="pt-80">
+              <div className="pt-80">
                     <div className="product-dContent border rounded-24">
                         <div className="product-dContent__header border-bottom border-gray-100 flex-between flex-wrap gap-16">
                             <ul

@@ -40,6 +40,21 @@ export const UserService = {
     
         return response.json(); // Trả về người dùng đã được cập nhật từ phản hồi của server
     },
+    updateUsers: async ( updateUser: User): Promise<User> => {
+        const response = await fetch(`${API_URL}updates`, {
+            method: 'POst', // Sử dụng phương thức PUT để cập nhật người dùng
+            headers: {
+                'Content-Type': 'application/json', // Định dạng dữ liệu là JSON
+            },
+            body: JSON.stringify(updateUser), // Chuyển đổi dữ liệu người dùng đã cập nhật thành JSON
+        });
+    
+        if (!response.ok) {
+            throw new Error('Failed to update user'); // Ném lỗi nếu có
+        }
+    
+        return response.json(); // Trả về người dùng đã được cập nhật từ phản hồi của server
+    },
     
     getUserByID: async (id: string): Promise<User> => { // Đặt kiểu dữ liệu cho id
         const response = await fetch(`${API_URL}${id}`); // Chỉnh sửa URL

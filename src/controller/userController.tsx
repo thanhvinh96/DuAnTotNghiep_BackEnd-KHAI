@@ -1,5 +1,5 @@
 import User from '../model/userModel.tsx'; // Đảm bảo đường dẫn và tên file đúng
-import { UserService } from '../services/UserService.tsx';
+import { UserService } from '../services/UserService.ts';
 
 export class UserController {
     // Hàm để lấy tất cả người dùng

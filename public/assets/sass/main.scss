@@ -10,7 +10,9 @@
 @import "partials/index";
 * {
   font-family: 'Signika', sans-serif;
+
 }
+
 // Extra styles for product card
 .product-card__thumb {
     width: 100%; /* Đảm bảo khung chứa hình ảnh chiếm 100% chiều rộng */
@@ -127,6 +129,7 @@
 }
 table {
   border: none;
+  color: #5a6268;
   width: 100%; /* Chiếm toàn bộ chiều rộng */
   border-collapse: collapse; /* Xóa khoảng cách giữa các ô */
 }
@@ -144,3 +147,24 @@ table {
   background-color: #FA6800; /* Màu nền bạn muốn */
   color: white; /* Màu chữ */
 }
+.product-details__thumb-slider {
+  width: 80%; /* Giảm chiều rộng của slider */
+  margin: 0 auto; /* Căn giữa slider trong vùng chứa */
+  padding: 10px; /* Thêm padding cho sự thoải mái */
+}
+
+.product-details__thumb {
+  width: 100%; /* Đảm bảo hình ảnh chính chiếm 100% chiều rộng của slider */
+  height: 250px; /* Đặt chiều cao cố định cho hình ảnh chính */
+  overflow: hidden; /* Ẩn phần vượt quá */
+  display: flex;
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+.product-details__thumb img {
+  width: auto; /* Để chiều rộng tự động */
+  height: 100%; /* Để chiều cao lấp đầy */
+  object-fit: cover; /* Cắt hình ảnh để phù hợp với khung */
+}
+  

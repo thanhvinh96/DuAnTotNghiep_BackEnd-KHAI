@@ -3,7 +3,9 @@ import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2'; // Nhập SweetAlert2
 import AddressInfo from './AddAdressProfile';
 import HistoryBuy from './HistoryBuy';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate thay vì useHistory
+import OrderDetailPage from './OrderDetailPage.jsx';
+import {UserService} from '../../services/UserService.ts';
+import { useNavigate ,useLocation} from 'react-router-dom'; // Import useNavigate thay vì useHistory
 
 // Dummy components for different pages
 const handleLogout = () => {
@@ -49,6 +51,8 @@ const ProfileInfo = () => {
       .then(data => {
         console.log(data.user.Role);
         if (data.status === true) {
+          console.log(data.user.UserID);
+          setEditData({ ...editData, UserID : data.user.UserID })
           setUserData(data.user); // Lưu dữ liệu người dùng vào state
         }
         setLoading(false); // Set loading to false after data is fetched
@@ -79,6 +83,52 @@ const ProfileInfo = () => {
   const handleAdminRedirect = () => {
     navigate('/admin'); // Chuyển hướng đến trang admin
   };
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editData, setEditData] = useState({});
+  
+  const handleEdit = () => {
+    setEditData({
+      Username: userData?.Username || "",
+      Email: userData?.Email || "",
+      PhoneNumber: userData?.PhoneNumber || "",
+      UserID : userData?.UserID  || "",
+      Password: "",
+    });
+    setShowEditModal(true);
+  };
+  
+  const handleCloseModal = () => {
+    setShowEditModal(false);
+  };
+  
+  const handleUpdate = async (e) => {
+    e.preventDefault(); // Chỉ gọi preventDefault mà không cần tham số
+    console.log(editData);
+
+    try {
+        const res = await UserService.updateUsers(editData); // Sử dụng await để lấy kết quả từ Promise
+        console.log(res);
+
+        // Kiểm tra trạng thái thành công
+        Swal.fire({
+            title: 'Thành công!',
+            text: 'Người dùng đã được cập nhật thành công!',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    } catch (error) {
+        // Nếu có lỗi trong quá trình cập nhật
+        Swal.fire({
+            title: 'Thất bại!',
+            text: 'Người dùng đã được cập nhật thất bại! ' + error.message,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    // Đóng modal sau khi xử lý xong
+    setShowEditModal(false);
+};
 
   return (
     <div className="account-card">
@@ -121,27 +171,93 @@ const ProfileInfo = () => {
             </div>
           </div>
         </div>
-        <div className="col-lg-6">
-      <button className="btn btn-danger btn-block" onClick={handleLogout}>
-        Đăng xuất
-      </button>
-    </div>
-      {/* Hiển thị thông báo lỗi nếu có */}
-{error && <div className="error-message">{error}</div>}
-{/* Nút điều hướng đến trang quản trị nếu là Admin */}
-{userData?.Role === 'Admin' && (
-  <div className="row mt-3">
-    <div className="col-lg-6">
-      <button className="btn btn-primary btn-block" onClick={handleAdminRedirect}>
+        <div className="d-flex justify-content-between">
+  <div className="btn-spacing">
+    <button className="btn btn-danger" onClick={handleLogout}>
+      Đăng xuất
+    </button>
+  </div>
+  <div className="btn-spacing">
+    <button className="btn btn-warning" onClick={handleEdit}>
+      Chỉnh sửa thông tin
+    </button>
+  </div>
+
+  {/* Nút điều hướng đến trang quản trị nếu là Admin */}
+  {userData?.Role === 'Admin' && (
+    <div className="btn-spacing">
+      <button className="btn btn-primary" onClick={handleAdminRedirect}>
         Đi đến trang quản trị
       </button>
     </div>
-   
-  </div>
-)}
+  )}
+</div>
+
+
 
       </div>
+      <div className={`modal fade ${showEditModal ? 'show' : ''}`} style={{ display: showEditModal ? 'block' : 'none' }} tabIndex="-1">
+    <div className="modal-dialog modal-dialog-centered"> {/* Thêm lớp để căn giữa modal */}
+        <div className="modal-content">
+        <div className="modal-header" style={{ background: '#E15E00' }}>
+    <p className="modal-title" >Chỉnh sửa thông tin</p>
+    <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+</div>
+
+            <div className="modal-body">
+                <form onSubmit={handleUpdate}>
+                    <div className="mb-3">
+                        <label className="form-label">Họ Và Tên</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={editData.Username}
+                            onChange={(e) => setEditData({ ...editData, Username: e.target.value })}
+                            required // Đánh dấu trường này là bắt buộc
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Địa chỉ Email</label>
+                        <input
+                            type="email"
+                            className="form-control"
+                            value={editData.Email}
+                            onChange={(e) => setEditData({ ...editData, Email: e.target.value })}
+                            required // Đánh dấu trường này là bắt buộc
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Mật Khẩu</label>
+                        <input
+                            type="Password"
+                            className="form-control"
+                            // value={editData.Password}
+                            onChange={(e) => setEditData({ ...editData, Password: e.target.value })}
+                            required // Đánh dấu trường này là bắt buộc
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Số điện thoại</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={editData.PhoneNumber}
+                            onChange={(e) => setEditData({ ...editData, PhoneNumber: e.target.value })}
+                            required // Đánh dấu trường này là bắt buộc
+                        />
+                    </div>
+                    <button type="submit" className="btn btn-primary">Cập nhật</button>
+                </form>
+            </div>
+        </div>
     </div>
+</div>
+
+
+      {/* Nền tối khi mở modal */}
+      {showEditModal && <div className="modal-backdrop fade show"></div>}
+    </div>
+    
   );
 };
 
@@ -159,6 +275,8 @@ const SecuritySettings = () => (
 );
 
 const Profile = () => {
+  const location = useLocation();
+
   // State for modal visibility, form data, and active component
   const [activeComponent, setActiveComponent] = useState('profile');
   // const tokenUser = localStorage.getItem('tokenUser'); // Lấy token từ localStorage
@@ -188,8 +306,15 @@ const Profile = () => {
   // };
 
   useEffect(() => {
-  
-  }, []);
+    // Lấy giá trị query params từ URL
+    const params = new URLSearchParams(location.search);
+    const model = params.get('model');
+
+    // Nếu model = 'orderdetail', cập nhật activeComponent
+    if (model === 'orderdetail') {
+      setActiveComponent('orderdetail'); // Hoặc một component nào đó mà bạn muốn render
+    }
+  }, [location.search]); // Phụ thuộc vào location.search để cập nhật khi URL thay đổi
 
   // Function to render the active component
   const renderComponent = () => {
@@ -202,7 +327,8 @@ const Profile = () => {
         return <SecuritySettings />;
       case 'historybuy':
         return <HistoryBuy />;
-
+      case 'orderdetail':
+          return <OrderDetailPage />;
       default:
         return <ProfileInfo />;
     }
@@ -229,13 +355,7 @@ const Profile = () => {
               >
                 <p><i className="fa-solid fa-wallet"></i> <span>Địa Chỉ Nhận Hàng</span></p>
               </a>
-              <a
-                className={`sidebar_profile ${activeComponent === 'security' ? 'active' : ''}`}
-                href="#"
-                onClick={() => setActiveComponent('security')}
-              >
-                <p><i className="fa-solid fa-shield-halved"></i> <span>Bảo mật</span></p>
-              </a>
+             
 
               <a
                 className={`sidebar_profile ${activeComponent === 'security' ? 'active' : ''}`}

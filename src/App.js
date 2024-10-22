@@ -24,6 +24,8 @@ import BlogPage from "./client/pages/BlogPage";
 import BlogDetailsPage from "./client/pages/BlogDetailsPage";
 import ContactPage from "./client/pages/ContactPage";
 import LoginPage from "./client/pages/Login";
+import Forgotpassword from "./client/pages/Forgotpassword";
+import TokenPassword from "./client/pages/TokenPassword.jsx";
 import RegisterPage from "./client/pages/Register";
 import CategoryManagement from './views/category/categorymanagement.tsx'; // Ensure the path starts with './'
 import VoucherManagement from './views/voucher/managentvoucher.tsx'; // Ensure the path starts with './'
@@ -64,18 +66,23 @@ export default function Main() {
 
         {/* Route cho client */}
         <Route path="client" element={<HomePageTwo />} />
+        <Route exact path="/home1" element={<HomePageOne />} />
+
             <Route exact path="/" element={<HomePageTwo />} />
             <Route exact path="/shop" element={<ShopPage />} />
             <Route exact path="/profile" element={<Profile />} />
             <Route exact path="/login" element={<ProtectedRoute element={LoginPage} />} />
             <Route exact path="/register" element={<ProtectedRoute element={RegisterPage} />} />
             <Route exact path="/product-details" element={<ProductDetailsPageTwo />} />
+            <Route exact path="/product-details-one" element={<ProductDetailsPageOne />} />
             <Route exact path="/cart" element={<CartPage />} />
             <Route exact path="/checkout" element={<CheckoutPage />} />
             <Route exact path="/account" element={<AccountPage />} />
             <Route exact path="/blog" element={<BlogPage />} />
             <Route exact path="/blog-details" element={<BlogDetailsPage />} />
             <Route exact path="/contact" element={<ContactPage />} />
+            <Route exact path="/forgot-password" element={<Forgotpassword />} />
+            <Route exact path="/password-new" element={<TokenPassword />} />
 
         <Route
           path="rtl/*"

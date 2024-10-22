@@ -25,10 +25,12 @@ import Categoryedit from 'views/category/categoryedit.tsx';
 import Productedit from 'views/product/productedit.tsx';
 import UserManagent from 'views/user/usermanagent.tsx';
 import UserUpdate from 'views/user/updateuser.tsx';
+import Managentbank from 'views/bank/managentbank.tsx';
 import VoucherManagement from './views/voucher/managentvoucher.tsx'; // Ensure the path starts with './'
 import OrderManagement from './views/order/orderManagent.tsx'; // Ensure the path starts with './'
 import Orderdetail from './views/order/orderDetail.tsx'; // Ensure the path starts with './'
 import UpdateVoucher from './views/voucher/updatevoucher.tsx';
+import Reviewmanagent from './views/review/reviewmanagent.tsx';
 
 // Auth Imports
 
@@ -104,6 +106,13 @@ const routes = [
     component: <UserManagent />,
   },
   {
+    name: 'Review',
+    layout: '/admin',
+    path: '/review-managent',
+    icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
+    component: <Reviewmanagent />,
+  },
+  {
 
     path: '/update-user',
     layout: '/admin',
@@ -118,6 +127,13 @@ const routes = [
     path: '/voucher-managent',
     icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
     component: <VoucherManagement />,
+  },
+  {
+    name: 'Ngân Hàng',
+    layout: '/admin',
+    path: '/bank-managent',
+    icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
+    component: <Managentbank />,
   },
     {
     // name: 'Phiếu Giảm Giá',

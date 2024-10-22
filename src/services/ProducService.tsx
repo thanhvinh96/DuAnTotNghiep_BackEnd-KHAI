@@ -27,7 +27,32 @@ export const ProductService = {
 
         return response.json(); // Trả về sản phẩm vừa tạo từ phản hồi của server
     },
-
+     getProductCategory: async (): Promise<any[]> => {
+        const response = await fetch(`${API_URL}get-category`); // Thay đổi URL theo API của bạn
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json(); // Giả sử API trả về dữ liệu dưới dạng JSON
+    },
+    updateProductStatus: async (id: string, newStatus: string): Promise<any> => {
+        const response = await fetch(`${API_URL}update-status`, {
+            method: 'POST', // Use PUT to update the user's status
+            headers: {
+                'Content-Type': 'application/json', // Ensure the content type is JSON
+            },
+            body: JSON.stringify({
+                productId: id, // Include the user's ID
+                newStatus: newStatus, // Include the new status
+            }),
+        });
+    
+        if (!response.ok) {
+            throw new Error('Failed to update user status'); // Handle any errors
+        }
+    
+        return response.json(); // Return the updated response from the server
+    },
+      
     updateProductByID: async (id: string, updateProduct: Product): Promise<Product> => {
         const response = await fetch(`${API_URL}${id}`, {
             method: 'PUT', // Sử dụng phương thức PUT để cập nhật sản phẩm
@@ -59,8 +84,14 @@ export const ProductService = {
         return response.json(); // Trả về dữ liệu JSON
     },
     deleteProductByID: async (id: string): Promise<Product> => {
-        const response = await fetch(`${API_URL}${id}`, {
-            method: 'DELETE', // Sử dụng phương thức DELETE để xóa sản phẩm
+        const response = await fetch(`${API_URL}delete`, {
+            method: 'POST', // Sử dụng phương thức DELETE để xóa sản phẩm
+            headers: {
+                'Content-Type': 'application/json', // Định dạng dữ liệu là JSON
+            },
+            body: JSON.stringify({
+                productId:id
+            }), // Chuyển đổi dữ liệu sản phẩm đã cập nhật thành JSON
         });
 
         if (!response.ok) {

@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
-  Button,
   Input,
   SimpleGrid,
   Table,
@@ -11,59 +10,46 @@ import {
   Th,
   Td,
   Link,
+  Button ,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from 'react-router-dom'; // Nhập Link từ React Router nếu bạn sử dụng
-
-// Dữ liệu mẫu cho bảng
-const orderData = [
-  {
-    OrderID: "001",
-    CodeOrder: "CO001",
-    UserID: "user_01",
-    BuyerName: "Nguyễn Văn A",
-    OrderDate: "2024-10-01",
-    TotalAmount: "$100.00",
-    Status: "Completed",
-    PaymentStatus: "Paid",
-    VoucherID: "VOU123",
-    TotalDiscount: "$10.00",
-  },
-  {
-    OrderID: "002",
-    CodeOrder: "CO002",
-    UserID: "user_02",
-    BuyerName: "Trần Thị B",
-    OrderDate: "2024-10-02",
-    TotalAmount: "$200.00",
-    Status: "Pending",
-    PaymentStatus: "Unpaid",
-    VoucherID: "VOU456",
-    TotalDiscount: "$5.00",
-  },
-  // Thêm nhiều dữ liệu hơn nếu cần
-];
+import { OrderService } from '../../services/OrderService.ts';
 
 export default function OrderManagement() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [orderData, setOrderData] = useState<any[]>([]);
   const tableBg = useColorModeValue("white", "gray.800");
 
+  const showdata = async () => {
+    try {
+      const res: any = await OrderService.getFullOrder(); // Đảm bảo sử dụng await
+      setOrderData(res);
+      console.log(res);
+    } catch (error) {
+      console.error("Error fetching order data:", error);
+    }
+  };
+
+  useEffect(() => {
+    showdata();
+  }, []);
+
   // Hàm lọc đơn hàng theo từ khóa tìm kiếm
-  const filteredOrders = orderData.filter(order => {
-    return (
-      order.OrderID.includes(searchTerm) ||
-      order.CodeOrder.includes(searchTerm) || // Tìm kiếm theo CodeOrder
-      order.UserID.includes(searchTerm) ||
-      order.BuyerName.toLowerCase().includes(searchTerm.toLowerCase()) || // Tìm kiếm theo tên người mua
-      order.OrderDate.includes(searchTerm) ||
-      order.TotalAmount.includes(searchTerm) ||
-      order.Status.includes(searchTerm) ||
-      order.PaymentStatus.includes(searchTerm) ||
-      order.VoucherID.includes(searchTerm) ||
-      order.TotalDiscount.includes(searchTerm)
-    );
-  });
-  const headerColor = useColorModeValue("white", "gray.800"); // Màu cho tiêu đề
+ // Hàm lọc đơn hàng theo từ khóa tìm kiếm
+const filteredOrders = orderData.filter(order => {
+  return (
+    (typeof order.codeorder === 'string' && order.codeorder.toLowerCase().includes(searchTerm.toLowerCase())) || // Tìm kiếm theo codeorder
+    (typeof order.UserID === 'string' && order.UserID.toLowerCase().includes(searchTerm.toLowerCase())) || // Tìm kiếm theo UserID
+    (typeof order.Address === 'string' && order.Address.toLowerCase().includes(searchTerm.toLowerCase())) || // Tìm kiếm theo địa chỉ
+    (typeof order.OrderDate === 'string' && order.OrderDate.toLowerCase().includes(searchTerm.toLowerCase())) || // Tìm kiếm theo Order Date
+    (typeof order.TotalAmount === 'number' && order.TotalAmount.toString().includes(searchTerm)) || // Tìm kiếm theo Total Amount
+    (typeof order.TotalDiscount === 'number' && order.TotalDiscount.toString().includes(searchTerm)) || // Tìm kiếm theo Total Discount
+    (typeof order.Status === 'string' && order.Status.toLowerCase().includes(searchTerm.toLowerCase())) || // Tìm kiếm theo Status
+    (typeof order.PaymentStatus === 'string' && order.PaymentStatus.toLowerCase().includes(searchTerm.toLowerCase())) // Tìm kiếm theo Payment Status
+  );
+});
+
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }} px={{ base: "20px", md: "40px" }}>
@@ -80,42 +66,35 @@ export default function OrderManagement() {
             <Table variant="simple">
               <Thead>
                 <Tr>
-                <Th color={headerColor}>Order ID</Th>
-                  <Th color={headerColor}>Code Order</Th> {/* Cột mới cho CodeOrder */}
-                  <Th color={headerColor}>User ID</Th>
-                  <Th color={headerColor}>Tên Người Mua</Th> {/* Cột mới cho tên người mua */}
-                  <Th color={headerColor}>Order Date</Th>
-                  <Th color={headerColor}>Total Amount</Th>
-                  <Th color={headerColor}>Status</Th>
-                  <Th color={headerColor}>Payment Status</Th>
-                  <Th color={headerColor}>Voucher ID</Th>
-                  <Th color={headerColor}>Total Discount</Th>
-                  <Th color={headerColor}>Action</Th>
+                  <Th color="black">Code Order</Th>
+                  <Th color="black">User ID</Th>
+                  <Th color="black">Tên Người Mua</Th>
+                  <Th color="black">Order Date</Th>
+                  <Th color="black">Total Amount</Th>
+                  <Th color="black">Status</Th>
+                  <Th color="black">Payment Status</Th>
+                  <Th color="black">Action</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {filteredOrders.map((order) => (
                   <Tr key={order.OrderID}>
-                    <Td>{order.OrderID}</Td>
-                    <Td>{order.CodeOrder}</Td> {/* Hiển thị CodeOrder */}
+                    <Td>{order.codeorder}</Td> {/* Hiển thị codeorder */}
                     <Td>{order.UserID}</Td>
-                    <Td>{order.BuyerName}</Td> {/* Hiển thị tên người mua */}
+                    <Td>{order.Username}</Td> {/* Hiển thị tên người mua */}
                     <Td>{order.OrderDate}</Td>
                     <Td>{order.TotalAmount}</Td>
                     <Td>{order.Status}</Td>
                     <Td>{order.PaymentStatus}</Td>
-                    <Td>{order.VoucherID}</Td>
-                    <Td>{order.TotalDiscount}</Td>
                     <Td>
-                    <Link 
-                        as={RouterLink} // Sử dụng RouterLink để điều hướng
-                        to={`/admin/order-detail?id=${order.OrderID}`} // Đường dẫn tới trang chi tiết
-                        color="blue.500" 
-                        fontWeight="bold"
-                      >
-                        Xem chi tiết
-                      </Link>
-                    </Td>
+  <Button
+    as={RouterLink} // Use RouterLink for navigation
+    to={`/admin/order-detail?id=${order.OrderID}`} // Route to the detail page
+    colorScheme="teal"        
+  >
+    Xem chi tiết
+  </Button>
+</Td>
                   </Tr>
                 ))}
               </Tbody>

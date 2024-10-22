@@ -47,7 +47,7 @@ export default function UserManagementView() {
     const fetchUsers = async () => {
 
         try {
-            const data = await UserController.fetchUsers();
+            const data:any = await UserController.fetchUsers();
             console.log(data)
             setUsers(data);
         } catch (error) {
@@ -79,7 +79,7 @@ export default function UserManagementView() {
     const indexOfLastUser = currentPage * usersPerPage;
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
     const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-    const hanlClickUpdate = (userId) => {
+    const hanlClickUpdate = (userId:any) => {
         navigate(`/admin/update-user?id=${userId}`)
     }
 
@@ -98,7 +98,7 @@ export default function UserManagementView() {
     };
     const [isUpdateSuccess, setIsUpdateSuccess] = useState(false); // State cho modal thông báo thành công
 
-    const handleStatusChange = async (user) => {
+    const handleStatusChange = async (user:any) => {
         try {
             // Xác định giá trị của Status
             const Status = user.status === 'Active' ? 'Inactive' : 'Active';
@@ -132,39 +132,7 @@ export default function UserManagementView() {
     mb="20px"
     width="100%" // Ensures full width
 >
-    <MiniStatistics
-        startContent={
-            <IconBox
-                w="56px"
-                h="56px"
-                bg={boxBg}
-                icon={
-                    <Icon w="32px" h="32px" as={MdBarChart} color={brandColor} />
-                }
-            />
-        }
-        name="Earnings"
-        value="$350.4"
-    />
-    <MiniStatistics
-        startContent={
-            <IconBox
-                w="56px"
-                h="56px"
-                bg={boxBg}
-                icon={
-                    <Icon w="32px" h="32px" as={MdAttachMoney} color={brandColor} />
-                }
-            />
-        }
-        name="Spend this month"
-        value="$642.39"
-    />
-    <MiniStatistics
-        growth="+23%"
-        name="Sales"
-        value="$574.34"
-    />
+  
 </SimpleGrid>
 
             <Box bg="white" borderRadius="md" boxShadow="md" p={5}>
@@ -187,18 +155,20 @@ export default function UserManagementView() {
                     <Table variant="striped" colorScheme="teal" size="sm">
                         <Thead>
                             <Tr>
-                                <Th color={tableBg}>Hành Động</Th>
-                                <Th color={tableBg}>User ID</Th>
-                                <Th color={tableBg}>Username</Th>
-                                <Th color={tableBg}>Email</Th>
-                                <Th color={tableBg}>Phone Number</Th>
-                                <Th color={tableBg}>Address</Th>
-                                <Th color={tableBg}>Role</Th>
-                                <Th color={tableBg}>Status</Th>
+  <Th color="black">Hành Động</Th>
+  <Th color="black">User ID</Th>
+  <Th color="black">Username</Th>
+  <Th color="black">Email</Th>
+  <Th color="black">Phone Number</Th>
+  <Th color="black">Address</Th>
+  <Th color="black">Role</Th>
+  <Th color="black">Status</Th>
+
+
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {currentUsers.map((user, index) => (
+                            {currentUsers.map((user:any, index) => (
                                 <Tr key={index}>
                                     <Td><Button
                                         colorScheme="blue"

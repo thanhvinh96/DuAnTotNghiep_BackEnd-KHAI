@@ -1,4 +1,4 @@
-import Category from '../models/categoryModel.tsx'; // Đảm bảo đường dẫn và tên file đúng
+import {Category} from '../model/categoryModel.ts'; // Đảm bảo đường dẫn và tên file đúng
 import { CategoryService } from '../services/CategoryService.tsx';
 
 export class CategoryController {

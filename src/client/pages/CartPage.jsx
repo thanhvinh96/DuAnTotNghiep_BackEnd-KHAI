@@ -11,33 +11,58 @@ import ScrollToTop from "react-scroll-to-top";
 import { Link } from 'react-router-dom'
 import { VoucherService } from '../../services/VoucherService.ts';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeFromProduct, updateProductQuantity ,updateTotalPrices} from '../../redux/acction/cartActions.ts'; // Đảm bảo đường dẫn đúng
+import { removeFromProduct, updateProductQuantity, updateTotalPrices } from '../../redux/acction/cartActions.ts'; // Đảm bảo đường dẫn đúng
 import Swal from 'sweetalert2'; // Nhập SweetAlert2
 import { Modal, Button } from 'react-bootstrap';  // Import các component từ Bootstrap
 import { jwtDecode } from 'jwt-decode';
 import { AddressController } from '../../services/AddressController.ts';
-import {OrderService} from '../../services/OrderService.ts'
+import { OrderService } from '../../services/OrderService.ts'
 import QuantityControl from '../helper/QuantityControl'
 
 const CartPage = () => {
   const tokenUser = localStorage.getItem('tokenUser');
+  
+
+  useEffect(()=>{
+    if(tokenUser){
   const decodedToken = jwtDecode(tokenUser); // Giải mã token
-  console.log('giá trị id '+decodedToken.userId)
+  console.log('giá trị id ' + decodedToken.userId)
+    }
+  })
   const [addresses, setaddresses] = useState([]);  // Khởi tạo là mảng rỗng
 
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.items); // Lấy danh sách sản phẩm trong giỏ hàng
   const [quantities, setQuantities] = useState({}); // State để lưu trữ số lượng cho từng sản phẩm
   const [loading, setLoading] = useState(false); // State để kiểm tra trạng thái tải lại dữ liệu
-  const showData = async ()=>{
-    const res = await AddressController.getAlladdressById(decodedToken.userId);
-    setaddresses(res)
-    console.log(res)
-  }
-  useEffect(()=>{
-    showData();
 
-  },[])
+  useEffect(() => {
+    const showData = async () => {
+        const tokenUser = localStorage.getItem('tokenUser'); // Lấy token từ localStorage
+
+        // Kiểm tra tokenUser trước khi giải mã
+        if (!tokenUser || typeof tokenUser !== 'string' || tokenUser.trim() === '') {
+            console.error('Invalid token:', tokenUser);
+            return; // Kết thúc hàm nếu token không hợp lệ
+        }
+
+        try {
+            const decodedToken = jwtDecode(tokenUser); // Giải mã token
+            console.log('giá trị id ' + decodedToken.userId); // Hiển thị userId từ token
+
+            // Gọi API để lấy địa chỉ bằng userId
+            const res = await AddressController.getAlladdressById(decodedToken.userId);
+            setaddresses(res); // Cập nhật state địa chỉ
+            console.log(res); // Hiển thị dữ liệu địa chỉ
+
+        } catch (error) {
+            console.error('Error decoding token or fetching addresses:', error);
+        }
+    };
+
+    showData();
+}, []); // Không cần thêm tokenUser vào dependency array nếu bạn luôn lấy nó từ localStorage
+
   const handleUpdateData = () => {
     setLoading(true); // Đặt trạng thái loading là true
     // Tại đây, bạn có thể thêm logic để cập nhật dữ liệu (gọi API hoặc xử lý dữ liệu)
@@ -49,13 +74,13 @@ const CartPage = () => {
     }, 1000); // Thay đổi 1000 thành khoảng thời gian cần thiết
   };
   const [discountCode, setDiscountCode] = useState(''); // Lưu mã giảm giá
-const [discountValue, setDiscountValue] = useState(0); // Lưu giá trị giảm giá tính theo % hoặc số tiền
-const [voucher, setVoucher] = useState([]); // Hoặc có thể là {}
-const [idvoucher,setidvoucher] = useState('');
+  const [discountValue, setDiscountValue] = useState(0); // Lưu giá trị giảm giá tính theo % hoặc số tiền
+  const [voucher, setVoucher] = useState([]); // Hoặc có thể là {}
+  const [idvoucher, setidvoucher] = useState('');
 
-const handleApplyDiscount = async () => {
-  // Hiển thị hộp thoại xác nhận từ SweetAlert2
-  const result = await Swal.fire({
+  const handleApplyDiscount = async () => {
+    // Hiển thị hộp thoại xác nhận từ SweetAlert2
+    const result = await Swal.fire({
       title: 'Bạn có chắc chắn?',
       text: 'Bạn có muốn áp dụng voucher này không?',
       icon: 'question',
@@ -64,59 +89,59 @@ const handleApplyDiscount = async () => {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Áp dụng',
       cancelButtonText: 'Hủy'
-  });
-  if (result.isConfirmed) {
+    });
+    if (result.isConfirmed) {
       try {
-          // Lấy voucher từ mã giảm giá
-          const voucher = await VoucherService.getVoucherByCode(discountCode);
-          console.log(voucher.code.VoucherID)
-          if (voucher && voucher.status === true) { // Kiểm tra voucher còn hiệu lực
-              // Giả sử voucher có thuộc tính 'percent' chứa tỷ lệ giảm giá
-              const discountValue = voucher.code.percent / 100; // Chuyển tỷ lệ giảm giá thành số thập phân
+        // Lấy voucher từ mã giảm giá
+        const voucher = await VoucherService.getVoucherByCode(discountCode);
+        console.log(voucher.code.VoucherID)
+        if (voucher && voucher.status === true) { // Kiểm tra voucher còn hiệu lực
+          // Giả sử voucher có thuộc tính 'percent' chứa tỷ lệ giảm giá
+          const discountValue = voucher.code.percent / 100; // Chuyển tỷ lệ giảm giá thành số thập phân
 
-              // Cập nhật giá trị giảm giá vào state hoặc biến
-              setDiscountValue(discountValue);
-              setidvoucher(voucher.code.VoucherID)
-              // Hiển thị thông báo thành công
-              Swal.fire({
-                  title: 'Voucher đã được áp dụng!',
-                  text: `Giảm giá: ${voucher.code.percent}%`,
-                  icon: 'success',
-                  confirmButtonText: 'OK'
-              });
-
-              console.log(`Applied discount: ${discountValue * 100}%`);
-          } else {
-              // Nếu voucher không hợp lệ hoặc đã hết hạn
-              Swal.fire({
-                  title: 'Mã giảm giá không hợp lệ!',
-                  text: 'Voucher này không còn hiệu lực hoặc không tồn tại.',
-                  icon: 'error',
-                  confirmButtonText: 'OK'
-              });
-          }
-      } catch (error) {
-          console.error('Error applying discount:', error);
+          // Cập nhật giá trị giảm giá vào state hoặc biến
+          setDiscountValue(discountValue);
+          setidvoucher(voucher.code.VoucherID)
+          // Hiển thị thông báo thành công
           Swal.fire({
-              title: 'Lỗi khi áp dụng voucher',
-              text: 'Không thể áp dụng voucher. Vui lòng thử lại.',
-              icon: 'error',
-              confirmButtonText: 'OK'
+            title: 'Voucher đã được áp dụng!',
+            text: `Giảm giá: ${voucher.code.percent}%`,
+            icon: 'success',
+            confirmButtonText: 'OK'
           });
+
+          console.log(`Applied discount: ${discountValue * 100}%`);
+        } else {
+          // Nếu voucher không hợp lệ hoặc đã hết hạn
+          Swal.fire({
+            title: 'Mã giảm giá không hợp lệ!',
+            text: 'Voucher này không còn hiệu lực hoặc không tồn tại.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      } catch (error) {
+        console.error('Error applying discount:', error);
+        Swal.fire({
+          title: 'Lỗi khi áp dụng voucher',
+          text: 'Không thể áp dụng voucher. Vui lòng thử lại.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
       }
-  } else {
+    } else {
       // Nếu người dùng hủy bỏ
       Swal.fire({
-          title: 'Đã hủy!',
-          text: 'Bạn đã hủy việc áp dụng voucher.',
-          icon: 'info',
-          confirmButtonText: 'OK'
+        title: 'Đã hủy!',
+        text: 'Bạn đã hủy việc áp dụng voucher.',
+        icon: 'info',
+        confirmButtonText: 'OK'
       });
-  }
-};
+    }
+  };
 
 
-  
+
   const handleRemoveToCart = (id) => {
     console.log(id);
     dispatch(removeFromProduct(id)); // Gửi action để xóa sản phẩm khỏi giỏ hàng
@@ -166,64 +191,88 @@ const handleApplyDiscount = async () => {
   }, 0);
   const totalPriceAfterDiscount = totalPrice * (1 - discountValue); // Áp dụng giảm giá vào tổng tiền
   const [selectedAddressid, setSelectedAddressid] = useState('');  // Để lưu địa chỉ đã chọn
-  const [dataorder,setdataorder] = useState([]);
-  const pushData = ()=>{
+  const [dataorder, setdataorder] = useState([]);
+  const pushData = () => {
     console.log(dataorder);
 
   }
-  const [selectedAddress, setSelectedAddress] = useState('');  // Để lưu địa chỉ đã chọn
+  const [selectedAddress, setSelectedAddress] = useState({
+    name: '',
+    phone: '',
+    addressType: '',
+    address: '',
+    id_address: ''
+  });
 
   const handlePlaceOrder = async () => {
-    const orderDetails = {
-      cartItems: cartItems.map(item => ({
-        ProductID : item.ProductID,
-
-        ProductName: item.ProductName,
-        Price: item.Price,
-        Quantity: quantities[item.ProductID],
-      })),
-      TotalAmount: totalPrice,
-      VoucherID:idvoucher,
-      discountValue: discountValue * 100, // Giảm giá theo phần trăm
-      TotalDiscount: totalPriceAfterDiscount,
-      selectedAddressid: selectedAddressid,
-      UserID:decodedToken.userId,
-      address:selectedAddress,
-    };
+    if(tokenUser){
+      const decodedToken = jwtDecode(tokenUser); // Giải mã token
+      const orderDetails = {
+        cartItems: cartItems.map(item => ({
+          ProductID: item.ProductID,
   
-    try {
-      console.log(orderDetails);
-      // Call your API to place the order (Assuming OrderService.createOrder is implemented)
-      const response = await OrderService.createOrder(orderDetails);
-      if (response.status===true) {
+          ProductName: item.ProductName,
+          Price: item.Price,
+          Quantity: quantities[item.ProductID],
+        })),
+        TotalAmount: totalPrice,
+        VoucherID: idvoucher,
+        discountValue: discountValue * 100, // Giảm giá theo phần trăm
+        TotalDiscount: totalPriceAfterDiscount,
+        selectedAddressid: selectedAddressid,
+        UserID: decodedToken.userId,
+        address: selectedAddress['address'],
+        addresstype: selectedAddress['addressType'],
+        recipientPhone: selectedAddress['phone'],
+        recipientName: selectedAddress['name'],
+      };
+  
+      try {
+        console.log(orderDetails);
+        // Call your API to place the order (Assuming OrderService.createOrder is implemented)
+        const response = await OrderService.createOrder(orderDetails);
+        if (response.status === true) {
+          Swal.fire({
+            title: 'Đặt hàng thành công!',
+            text: `Mã đơn hàng: ${response.orderId}`,
+            icon: 'success',
+            confirmButtonText: 'OK',
+          });
+        } else {
+          throw new Error('Đặt hàng thất bại!');
+        }
+      } catch (error) {
         Swal.fire({
-          title: 'Đặt hàng thành công!',
-          text: `Mã đơn hàng: ${response.orderId}`,
-          icon: 'success',
+          title: 'Lỗi khi đặt hàng',
+          text: error.message || 'Không thể đặt hàng. Vui lòng thử lại.',
+          icon: 'error',
           confirmButtonText: 'OK',
         });
-      } else {
-        throw new Error('Đặt hàng thất bại!');
       }
-    } catch (error) {
+    }else{
       Swal.fire({
         title: 'Lỗi khi đặt hàng',
-        text: error.message || 'Không thể đặt hàng. Vui lòng thử lại.',
+        text: 'Vui Lòng Đăng Nhập.',
         icon: 'error',
         confirmButtonText: 'OK',
       });
     }
+  
   };
-  
-  
+
+
   const [isModalOpen, setIsModalOpen] = useState(false);  // Để điều khiển việc hiển thị modal
 
   const handleChangeAddress = (address) => {
     console.log(address.id_address)
-    setSelectedAddress(address.address);  // Cập nhật địa chỉ đã chọn
-    setSelectedAddressid(address.id_address);
-  
-    
+    setSelectedAddress({
+      name: address.name || '',
+      phone: address.phone || '',
+      addressType: address.addressType || '',
+      address: address.address || '',
+      id_address: address.id_address || ''
+    });
+
     setIsModalOpen(false);  // Đóng modal sau khi chọn
   };
 
@@ -257,54 +306,71 @@ const handleApplyDiscount = async () => {
         <div className="container container-lg">
           <div className="row gy-4">
             <div className="col-xl-9 col-lg-8">
-            <div>
-      {/* Address Section */}
-      <div className="address-section">
-        <h2 className="payment-title">Địa chỉ nhận hàng</h2>
-        <div className="address-details">
-          <div className="address-info">
-            <div className="address-name">
-              phan gia thuyên (+84) 869895748
-            </div>
-            <div className="address-full">
-              {selectedAddress || ""}
-            </div>
-            <div className="address-default">Mặc định</div>
-          </div>
-          <Button className="change-btn" onClick={() => setIsModalOpen(true)}>Thay đổi</Button>
-        </div>
-      </div>
+              <div>
+                {/* Address Section */}
+                <div className="address-section">
+                  <h2 className="payment-title">Địa chỉ nhận hàng</h2>
+                  <div className="address-details">
+                    <div className="address-info">
+                      <div className="address-name">
+                        Địa Điểm
+                      </div>
+                      <div className="address-full">
+                        <p>
+                          <strong>Địa Điểm:</strong> {selectedAddress['address'] || "Chưa có địa điểm"}
+                        </p>
+                        <p>
+                          <strong>Loại Địa Điểm:</strong> {selectedAddress['addressType'] || "Chưa có loại địa điểm"}
+                        </p>
+                        <p>
+                          <strong>Số Điện Thoại:</strong> {selectedAddress['phone'] || "Chưa có số điện thoại"}
+                        </p>
+                        <p>
+                          <strong>Họ Tên Người Nhận:</strong> {selectedAddress['name'] || "Chưa có tên người nhận"}
+                        </p>
+                      </div>
 
-      {/* Bootstrap Modal */}
-      <Modal show={isModalOpen} onHide={() => setIsModalOpen(false)}>
-  <Modal.Header className="custom-modal-header" closeButton>
-    <p className="payment-titles">Địa chỉ nhận hàng</p>
-  </Modal.Header>
-  <Modal.Body>
-  <ul className="list-group">
-  {Array.isArray(addresses) && addresses.map((address, index) => (
-    <li key={index} className="list-group-item">
-      <a 
-        href="#" 
-        className="w-100 text-left custom-text-black" 
-        onClick={() => handleChangeAddress(address)}
-      >
-        {address.name || "No Name"} - {address.address || "No Address"}
-      </a>
-    </li>
-  ))}
-</ul>
+                      <div className="address-default">Mặc định</div>
+                    </div>
+                    <Button className="change-btn" onClick={() => setIsModalOpen(true)}>Thay đổi</Button>
+                  </div>
+                </div>
+
+                {/* Bootstrap Modal */}
+                <Modal show={isModalOpen} onHide={() => setIsModalOpen(false)}>
+                  <Modal.Header className="custom-modal-header" closeButton>
+                    <p className="payment-titles">Địa chỉ nhận hàng</p>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <ul className="list-group">
+                      {Array.isArray(addresses) && addresses.map((address, index) => (
+                        <li key={index} className="list-group-item" style={{ marginBottom: '20px' }}>
+                          <a
+                            href="#"
+                            className="w-100 text-left custom-text-black"
+                            onClick={() => handleChangeAddress(address)}
+                          >
+                            {address.name || "No Name"} -
+                            {address.address || "No Address"} -
+                            {address.phone || "No Phone"} -
+                            {address.addressType || "No Location Type"}
+                          </a>
+                        </li>
+                      ))}
 
 
-  </Modal.Body>
-  <Modal.Footer>
-    <Button variant="secondary" onClick={() => setIsModalOpen(false)}>
-      Đóng
-    </Button>
-  </Modal.Footer>
-</Modal>
+                    </ul>
 
-    </div>
+
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setIsModalOpen(false)}>
+                      Đóng
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+
+              </div>
 
               <div className="cart-table border border-gray-100 rounded-8 px-40 py-48">
                 <div className="overflow-x-auto scroll-sm scroll-sm-horizontal">
@@ -423,22 +489,22 @@ const handleApplyDiscount = async () => {
                   </table>
                 </div>
                 <div className="flex-between flex-wrap gap-16 mt-16">
-                <div className="flex-align gap-16">
-  <input
-    type="text"
-    className="common-input"
-    placeholder="Áp Dụng Mã Giảm Giá"
-    value={discountCode} // State để lưu trữ mã giảm giá
-    onChange={(e) => setDiscountCode(e.target.value)} // Cập nhật giá trị mã giảm giá khi thay đổi input
-  />
-  <button
-    type="button"
-    className="btn btn-main py-18 w-100 rounded-8"
-    onClick={handleApplyDiscount} // Gọi hàm khi nhấn nút "Áp Dụng"
-  >
-    Áp Dụng
-  </button>
-</div>
+                  <div className="flex-align gap-16">
+                    <input
+                      type="text"
+                      className="common-input"
+                      placeholder="Áp Dụng Mã Giảm Giá"
+                      value={discountCode} // State để lưu trữ mã giảm giá
+                      onChange={(e) => setDiscountCode(e.target.value)} // Cập nhật giá trị mã giảm giá khi thay đổi input
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-main py-18 w-100 rounded-8"
+                      onClick={handleApplyDiscount} // Gọi hàm khi nhấn nút "Áp Dụng"
+                    >
+                      Áp Dụng
+                    </button>
+                  </div>
 
 
                 </div>
@@ -451,12 +517,12 @@ const handleApplyDiscount = async () => {
                   <div class="mb-32 d-flex justify-content-between gap-8">
                     <span class="text-gray-900 font-heading-two">Tổng Tiền</span>
                     <span className="text-gray-900 fw-semibold">{formatCurrency(totalPrice)}</span>
-                    </div>
-                 
+                  </div>
+
                   <div class="mb-0 d-flex justify-content-between gap-8">
                     <span class="text-gray-900 font-heading-two">Giá Sau Khi Áp Dụng</span>
                     <span class="text-gray-900 fw-semibold">
-                    {formatCurrency(totalPriceAfterDiscount)} 
+                      {formatCurrency(totalPriceAfterDiscount)}
 
                     </span>
                   </div>
@@ -465,20 +531,20 @@ const handleApplyDiscount = async () => {
                   <div class="d-flex justify-content-between gap-8">
                     <span class="text-gray-900 text-xl fw-semibold">Tổng Tiền</span>
                     {
-  totalPrice > totalPriceAfterDiscount ? (
-    <span className="text-gray-900 text-xl fw-semibold">
-      {formatCurrency(totalPrice)} → {formatCurrency(totalPriceAfterDiscount)}
-    </span>
-  ) : null
-}
+                      totalPrice > totalPriceAfterDiscount ? (
+                        <span className="text-gray-900 text-xl fw-semibold">
+                          {formatCurrency(totalPrice)} → {formatCurrency(totalPriceAfterDiscount)}
+                        </span>
+                      ) : null
+                    }
                   </div>
                 </div>
                 <button
-      className="btn btn-main mt-40 py-18 w-100 rounded-8"
-      onClick={handlePlaceOrder}
-    >
-      Đặt Hàng
-    </button>              </div>
+                  className="btn btn-main mt-40 py-18 w-100 rounded-8"
+                  onClick={handlePlaceOrder}
+                >
+                  Đặt Hàng
+                </button>              </div>
             </div>
 
           </div>

@@ -21,6 +21,8 @@ import NewsletterOne from "../components/NewsletterOne";
 import FooterOne from "../components/FooterOne";
 import BottomFooter from "../components/BottomFooter";
 import ScrollToTop from "react-scroll-to-top";
+import DealsOne from "../components/DealsOne";
+import DealsCategory from "../components/DealsCategory";
 import ColorInit from "../helper/ColorInit";
 const HomePageOne = () => {
 
@@ -50,46 +52,26 @@ const HomePageOne = () => {
       <PromotionalOne />
 
       {/* FlashSalesOne */}
-      <FlashSalesOne />
 
       {/* ProductListOne */}
-      <ProductListOne />
+      {/* <ProductListOne /> */}
+      <DealsOne />
+      <FlashSalesOne />
 
+      <DealsCategory />
       {/* OfferOne */}
-      <OfferOne />
+      {/* <OfferOne /> */}
 
       {/* RecommendedOne */}
-      <RecommendedOne />
+      {/* <RecommendedOne /> */}
 
       {/* HotDealsOne */}
-      <HotDealsOne />
+      {/* <HotDealsOne /> */}
 
       {/* TopVendorsOne */}
-      <TopVendorsOne />
-
-      {/* BestSellsOne */}
-      <BestSellsOne />
-
-      {/* DeliveryOne */}
-      <DeliveryOne />
-
-      {/* OrganicOne */}
-      <OrganicOne />
-
-      {/* ShortProductOne */}
-      <ShortProductOne />
-
-      {/* BrandOne */}
-      <BrandOne />
-
-      {/* NewArrivalOne */}
-      <NewArrivalOne />
-
-      {/* ShippingOne */}
-      <ShippingOne />
-
+    
+      
       {/* NewsletterOne */}
-      <NewsletterOne />
 
       {/* FooterOne */}
       <FooterOne />

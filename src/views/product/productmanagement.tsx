@@ -18,7 +18,11 @@ import {
     Badge,
     Text,
 } from "@chakra-ui/react";
+import Swal from 'sweetalert2'; // Nhập SweetAlert2
 
+import {ProductController} from '../../controller/productController.tsx';
+import {CategoryController} from '../../controller/categoryController.tsx';
+import { any } from 'micromatch';
 export default function ProductManagement() {
     interface DataTable {
         ProductName: string;
@@ -29,7 +33,8 @@ export default function ProductManagement() {
         CategoryName: string;
         Priority: string;
         ShortDescription: string;
-        ProductID :String;
+        ProductID: string; // Change this to 'string'
+        SoldQuantity:Number;
     }
 
     const [dataTableProduc, setDataTableProduc] = useState<DataTable[]>([]);
@@ -55,9 +60,23 @@ export default function ProductManagement() {
             console.error('Error creating product:', error);
         }
     };
-
+    const [dataCategory,getdataCategory] = useState([]);
+    const showdataCategory = async () => {
+        try {
+            const res:any = await CategoryController.fetchCategories(); // Đảm bảo bạn đang sử dụng await ở đây
+            if (Array.isArray(res)) { // Kiểm tra xem res có phải là mảng không
+                console.log(res)
+                getdataCategory(res); // Cập nhật state với danh mục
+            } else {
+                console.error('Expected an array but received:', res); // Nếu không phải mảng
+            }
+        } catch (error) {
+            console.error('Error fetching categories:', error); // Xử lý lỗi nếu có
+        }
+    };
     useEffect(() => {
         showData();
+        showdataCategory();
     }, []);
 
     // Tính toán các chỉ số cho trang hiện tại
@@ -69,11 +88,11 @@ export default function ProductManagement() {
         return (
             (product.ProductName.toLowerCase().includes(searchTerm.toLowerCase()) || searchTerm === '') &&
             (selectedCategory === '' || product.CategoryName === selectedCategory) &&
-            (statusFilter === '' || (statusFilter === 'active' ? product.status === '1' : product.status === '0'))
+            (statusFilter === '' || (statusFilter === 'active' ? product.status === 'active' : product.status === 'SHUTDOWN'))
         );
     });
 
-    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems:any = filteredData.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
     // Hàm chuyển đổi thời gian
@@ -89,7 +108,51 @@ export default function ProductManagement() {
         };
         return new Date(dateString).toLocaleString('vi-VN', options);
     };
-
+    const handleHide = async (id: string, status: any) => {
+        try {
+            // Gọi hàm updateProductStatus và chờ kết quả
+            const res = await ProductController.updateProductStatus(id, status);
+            
+            // Nếu thành công, hiển thị modal thông báo thành công
+            Swal.fire({
+                title: 'Success!',
+                text: res, // Hiển thị kết quả trả về, ví dụ: "Product status updated successfully"
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        } catch (error) {
+            // Nếu thất bại, hiển thị modal thông báo lỗi
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to update product status', // Thông báo lỗi
+                icon: 'error',
+                confirmButtonText: 'Try Again'
+            });
+        }
+    };
+    const handleDelete = async (id: string) => {
+        try {
+            // Gọi hàm deleteProductByID và chờ kết quả
+            await ProductController.deleteProductByID(id);
+            
+            // Nếu thành công, hiển thị modal thông báo thành công
+            Swal.fire({
+                title: 'Success!',
+                text: 'Product deleted successfully', // Thông báo thành công
+                icon: 'success', // Icon hiển thị thành công
+                confirmButtonText: 'OK'
+            });
+        } catch (error) {
+            // Nếu thất bại, hiển thị modal thông báo lỗi
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to delete product', // Thông báo lỗi
+                icon: 'error', // Icon hiển thị lỗi
+                confirmButtonText: 'Try Again'
+            });
+        }
+    };
+    
     return (
         <Box pt={{ base: "20px", md: "80px", xl: "80px" }}>
             <Card p={5} mb={{ base: "0px", lg: "40px" }}>
@@ -118,15 +181,16 @@ export default function ProductManagement() {
                     <FormControl>
                         <FormLabel>Chọn danh mục</FormLabel>
                         <Select
-                            value={selectedCategory}
-                            onChange={(e) => setSelectedCategory(e.target.value)}
-                        >
-                            <option value="">Tất cả danh mục</option>
-                            <option value="Category1">Danh mục 1</option>
-                            <option value="Category2">Danh mục 2</option>
-                            <option value="Category3">Danh mục 3</option>
-                            {/* Thêm các danh mục khác nếu cần */}
-                        </Select>
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+                <option value="">Tất cả danh mục</option>
+                {dataCategory.map((category:any) => (
+                    <option key={category.CategoryID} value={category.CategoryName}>
+                        {category.CategoryName}
+                    </option>
+                ))}
+            </Select>
                     </FormControl>
                     <FormControl>
                         <FormLabel>Trạng thái</FormLabel>
@@ -136,46 +200,83 @@ export default function ProductManagement() {
                         >
                             <option value="">Tất cả</option>
                             <option value="active">Kích hoạt</option>
-                            <option value="inactive">Ngừng hoạt động</option>
+                            <option value="SHUTDOWN">Ngừng hoạt động</option>
                         </Select>
                     </FormControl>
                 </Grid>
 
-                <Box mt={4}>
-                    <Text fontWeight="bold">Hiển thị từ <strong>{indexOfFirstItem + 1}</strong> đến <strong>{indexOfLastItem > filteredData.length ? filteredData.length : indexOfLastItem}</strong> của <strong>{filteredData.length}</strong> sản phẩm</Text>
-                    <Table variant="striped" colorScheme="teal" mt={4}>
-                        <Thead>
+                <Box overflowX="auto" mt={4}>
+                <Text fontWeight="bold">Hiển thị từ <strong>{indexOfFirstItem + 1}</strong> đến <strong>{indexOfLastItem > filteredData.length ? filteredData.length : indexOfLastItem}</strong> của <strong>{filteredData.length}</strong> sản phẩm</Text>
+                <Table variant="striped" colorScheme="teal">
+                <Thead>
                             <Tr>
-                            <Th color="white">Ưu tiên</Th>
-    <Th color="white">Thao tác</Th>
-    <Th color="white">Sản phẩm</Th>
-    <Th color="white">Chuyên mục</Th>
-    <Th color="white">Trạng thái</Th>
-    <Th color="white">Giá bán</Th>
-    <Th color="white">Thời gian</Th>
+                            <Th color="black">Ưu tiên</Th>
+    <Th color="black">Thao tác</Th>
+    <Th color="black">Sản phẩm</Th>
+    <Th color="black">Trạng Thái</Th>
+    <Th color="black">Chuyên mục</Th>
+    <Th color="black">Số Lượng Đã Bán</Th>
+    <Th color="black">Giá bán</Th>
+    <Th color="black">Thời gian</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {currentItems.map((product, index) => (
+                            {currentItems.map((product:any, index:any) => (
                                 <Tr key={index}>
-                                    <Td>{product.Priority || "N/A"}</Td>
+                                    <Td>{product.Priority}</Td>
                                     <Td>
-                                        <Button as="a" href={`/admin/products-edit?id=${product.ProductID}`} colorScheme="yellow" size="sm">
-                                            <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
-                                        </Button>
-                                    </Td>
+    <Box display="flex" flexDirection="column" gap="20px"> {/* Added Box for layout and spacing */}
+        <Button
+            as="a"
+            href={`/admin/products-edit?id=${product.ProductID}`}
+            colorScheme="yellow"
+            size="sm"
+            width="100%" // Ensures buttons are the same width
+        >
+            <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+        </Button>
+        <Button
+    onClick={() => handleHide(product.ProductID, product.status === 'Active' ? 'SHUTDOWN' : 'Active')} // Thay đổi status dựa trên giá trị hiện tại
+    colorScheme="blue"
+    size="sm"
+    width="100%" // Đảm bảo các nút có cùng chiều rộng
+>
+    <i className={`fa-solid ${product.status === 'Active' ? "fa-eye-slash" : "fa-eye"}`}></i> 
+    {product.status === 'SHUTDOWN' ? "Hiển thị sản phẩm" : "Ẩn sản phẩm"}  {/* Điều kiện để hiển thị đúng text */}
+</Button>
+
+        {/* <Button
+            onClick={() => handleDelete(product.ProductID)} // Hàm xử lý xóa sản phẩm
+            colorScheme="red"
+            size="sm"
+            width="100%" // Ensures buttons are the same width
+        >
+            <i className="fa-solid fa-trash"></i> Xóa
+        </Button> */}
+    </Box>
+</Td>
+
+
                                     <Td>
                                         <Text>
                                             <a href={`/admin/products-edit?id=${product.ProductID}`}>{product.ProductName}</a>
                                         </Text>
                                     </Td>
+                                    <Td>
+    <Badge colorScheme={product.status === 'SHUTDOWN' ? "green" : "gray"}>
+        {product.status === 'SHUTDOWN' ? "Đang Ân" : "Hoạt Động"}
+    </Badge>
+</Td>
+
                                     <Td><Badge colorScheme="blue">{product.CategoryName}</Badge></Td>
                                     <Td>
-                                        <Checkbox isChecked={product.status === "1"} />
+                                    <Td>
+    <Text>{product.TotalQuantitySold}</Text>
+</Td>
+
                                     </Td>
                                     <Td>
                                         Giá bán: <b style={{ color: 'red' }}>{product.Price}</b><br />
-                                        Giá vốn: <b style={{ color: 'blue' }}>{product.Cost}</b>
                                     </Td>
                                     <Td><Text>{formatDate(product.Creationtime) || "N/A"}</Text></Td>
                                 </Tr>

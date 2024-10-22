@@ -339,13 +339,14 @@ export default function VoucherManagement() {
                     <Table variant="simple" mt={6}>
                         <Thead>
                             <Tr>
-                                <Th color={tableBg}>Mã Voucher</Th>
-                                <Th color={tableBg}>Ngày hết hạn</Th>
-                                <Th color={tableBg}>Số tiền mua tối thiểu</Th>
-                                <Th color={tableBg}>Số lượng đã sử dụng</Th>
-                                <Th color={tableBg}>Số lượng có thể dùng</Th>
-                                <Th color={tableBg}>Trạng thái</Th>
-                                <Th color={tableBg}>Hành Động</Th>
+                            <Th style={{ backgroundColor: tableBg, color: 'black' }}>Mã Voucher</Th>
+<Th style={{ backgroundColor: tableBg, color: 'black' }}>Ngày hết hạn</Th>
+<Th style={{ backgroundColor: tableBg, color: 'black' }}>Số tiền mua tối thiểu</Th>
+<Th style={{ backgroundColor: tableBg, color: 'black' }}>Số lượng đã sử dụng</Th>
+<Th style={{ backgroundColor: tableBg, color: 'black' }}>Số lượng có thể dùng</Th>
+<Th style={{ backgroundColor: tableBg, color: 'black' }}>Trạng thái</Th>
+<Th style={{ backgroundColor: tableBg, color: 'black' }}>Hành Động</Th>
+
                             </Tr>
                         </Thead>
                         <Tbody>

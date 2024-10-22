@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import query from 'jquery';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink,useNavigate } from 'react-router-dom';
 import { CategoryController } from '../../controller/categoryController.tsx';
 
 const HeaderTwo = ({ category }) => {
@@ -75,9 +75,19 @@ const HeaderTwo = ({ category }) => {
         console.log(datacategory);
 
       }, []);
+      const [searchTerm, setSearchTerm] = useState(''); // State để lưu giá trị tìm kiếm
+      const navigate = useNavigate(); // Hook để điều hướng
+  
+      const handleSearch = (e) => {
+          e.preventDefault(); // Ngăn chặn form submit mặc định
+          if (searchTerm) {
+              navigate(`/shop?productname=${searchTerm}`); // Điều hướng đến trang /shop với query productname
+          }
+      };
+  
     return (
         <>
-            <div className="overlay" />
+            <div className="overlay " />
             <div className={`side-overlay ${(menuActive || activeCategory) && "show"}`} />
             {/* ==================== Search Box Start Here ==================== */}
 
@@ -345,15 +355,18 @@ const HeaderTwo = ({ category }) => {
                             <form
                                 action="#"
                                 className="flex-align flex-wrap form-location-wrapper"
+                                onSubmit={handleSearch}
                             >
                                 <div className="search-category style-two d-flex h-48 search-form d-sm-flex d-none">
                                    
                                     <div className="search-form__wrapper position-relative">
-                                        <input
-                                            type="text"
-                                            className="search-form__input common-input py-13 ps-16 pe-18 rounded-0 border-0"
-                                            placeholder="Search for a product or brand"
-                                        />
+                                    <input
+                    type="text"
+                    className="search-form__input common-input py-13 ps-16 pe-18 rounded-0 border-0"
+                    placeholder="Tìm Sản Phẩm Theo Yêu Cầu"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)} // Cập nhật giá trị tìm kiếm
+                />
                                     </div>
                                     <button
                                         type="submit"
@@ -362,6 +375,7 @@ const HeaderTwo = ({ category }) => {
                                         <i className="ph ph-magnifying-glass" />
                                     </button>
                                 </div>
+                                
                             </form>
                         </div>
                         {/* form Category start */}
@@ -388,7 +402,7 @@ const HeaderTwo = ({ category }) => {
                             Tài Khoản
                         </span>
                     </Link>
-                    <Link
+                    {/* <Link
                         to="/wishlist" // Sửa lại đường dẫn nếu cần
                         className="flex-align flex-column gap-8 item-hover-two"
                     >
@@ -402,16 +416,13 @@ const HeaderTwo = ({ category }) => {
                             Sản Phẩm Yêu Thích
                         </span>
                     </Link>
-                  
+                   */}
                     <Link
                         to="/cart"
                         className="flex-align flex-column gap-8 item-hover-two"
                     >
-                        <span className="text-2xl text-white d-flex position-relative me-6 mt-6 item-hover__text">
-                            <i className="ph ph-shopping-cart-simple" />
-                            <span className="w-16 h-16 flex-center rounded-circle bg-main-two-600 text-white text-xs position-absolute top-n6 end-n4">
-                                2
-                            </span>
+                        <span className="text-2xl text-white d-flex position-relative item-hover__text">
+                        <i className="ph ph-shopping-cart-simple" />
                         </span>
                         <span className="text-md text-white item-hover__text d-none d-lg-flex">
                             Giỏ Hàng
@@ -463,81 +474,26 @@ const HeaderTwo = ({ category }) => {
                                             <img src="assets/images/logo/logo.png" alt="Logo" />
                                         </Link>
                                     </div>
-                                    <ul className="scroll-sm p-0 py-8 overflow-y-auto">
-                                        <li onClick={() => handleCatClick(0)} className={`has-submenus-submenu ${activeIndexCat === 0 ? "active" : ""}`}>
-                                            <Link onClick={() => setActiveIndexCat(null)}
-                                                to="#"
-                                                className="text-gray-500 text-15 py-12 px-16 flex-align gap-8 rounded-0"
-                                            >
-                                                <span>Cell Phone</span>
-                                                <span className="icon text-md d-flex ms-auto">
-                                                    <i className="ph ph-caret-right" />
-                                                </span>
-                                            </Link>
-                                            <div className={`submenus-submenu py-16 ${activeIndexCat === 0 ? "open" : ""}`}>
-                                                <h6 className="text-lg px-16 submenus-submenu__title">
-                                                    Cell Phone
-                                                </h6>
-                                                <ul className="submenus-submenu__list max-h-300 overflow-y-auto scroll-sm">
-                                                    <li>
-                                                        <Link to="/shop">Samsung</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/shop">Iphone</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/shop">Vivo</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/shop">Oppo</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/shop">Itel</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/shop">Realme</Link>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                        <li onClick={() => handleCatClick(1)} className={`has-submenus-submenu ${activeIndexCat === 1 ? "active" : ""}`}>
-                                            <Link
-                                                to="#"
-                                                className="text-gray-500 text-15 py-12 px-16 flex-align gap-8 rounded-0"
-                                            >
-                                                <span>Wear</span>
-                                                <span className="icon text-md d-flex ms-auto">
-                                                    <i className="ph ph-caret-right" />
-                                                </span>
-                                            </Link>
-                                            <div className={`submenus-submenu py-16 ${activeIndexCat === 1 ? "open" : ""}`}>
-                                                <h6 className="text-lg px-16 submenus-submenu__title">
-                                                    Wear
-                                                </h6>
-                                                <ul className="submenus-submenu__list max-h-300 overflow-y-auto scroll-sm">
-                                                    <li>
-                                                        <Link to="/shop">Samsung</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/shop">Iphone</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/shop">Vivo</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/shop">Oppo</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/shop">Itel</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/shop">Realme</Link>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            </li>
-
-                                    </ul>
+                                    <ul className="scroll-sm p-0 py-8 w-300 max-h-400 overflow-y-auto">
+                            {datacategory.length > 0 ? (
+                datacategory.map((category) => (
+                    <li className="has-submenus-submenu" key={category.CategoryID}>
+                        <Link
+                            to={`/shop/?category=${category.CategoryID}`} // Thay đường dẫn nếu cần
+                            className="text-gray-500 text-15 py-12 px-16 flex-align gap-8 rounded-0"
+                        >
+                            <span>{category.CategoryName}</span>
+                            <span className="icon text-md d-flex ms-auto">
+                                <i className="ph ph-caret-right" />
+                            </span>
+                        </Link>
+                    </li>
+                ))
+            ) : (
+                <li>No categories available</li>
+            )}
+                               
+                            </ul>
                                 </div>
                             </div>
                             <div className={`category main  on-hover-item bg-main-600 text-white ${category === true ? "d-block" : "d-none"}`}>
@@ -623,192 +579,7 @@ const HeaderTwo = ({ category }) => {
                         <div className="header-right flex-align">
                             <div className="select-dropdown-for-home-two d-lg-block d-none">
                                 {/* Dropdown Select Start */}
-                                <ul className="header-top__right style-two flex-align flex-wrap">
-                                    <li className="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
-                                        {/* Display the selected language */}
-                                        <Link to="#" className="selected-text text-heading text-sm py-8">
-                                            {selectedLanguage}
-                                        </Link>
-                                        <ul className="selectable-text-list on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
-                                            <li>
-                                                <Link
-                                                    to="#"
-                                                    className="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"
-                                                    onClick={() => handleLanguageChange("English")}
-                                                >
-                                                    <img
-                                                        src="assets/images/thumbs/flag1.png"
-                                                        alt="English"
-                                                        className="w-16 h-12 rounded-4 border border-gray-100"
-                                                    />
-                                                    English
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link
-                                                    to="#"
-                                                    className="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"
-                                                    onClick={() => handleLanguageChange("Japan")}
-                                                >
-                                                    <img
-                                                        src="assets/images/thumbs/flag2.png"
-                                                        alt="Japan"
-                                                        className="w-16 h-12 rounded-4 border border-gray-100"
-                                                    />
-                                                    Japan
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link
-                                                    to="#"
-                                                    className="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"
-                                                    onClick={() => handleLanguageChange("French")}
-                                                >
-                                                    <img
-                                                        src="assets/images/thumbs/flag3.png"
-                                                        alt="French"
-                                                        className="w-16 h-12 rounded-4 border border-gray-100"
-                                                    />
-                                                    French
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link
-                                                    to="#"
-                                                    className="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"
-                                                    onClick={() => handleLanguageChange("Germany")}
-                                                >
-                                                    <img
-                                                        src="assets/images/thumbs/flag4.png"
-                                                        alt="Germany"
-                                                        className="w-16 h-12 rounded-4 border border-gray-100"
-                                                    />
-                                                    Germany
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link
-                                                    to="#"
-                                                    className="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"
-                                                    onClick={() => handleLanguageChange("Bangladesh")}
-                                                >
-                                                    <img
-                                                        src="assets/images/thumbs/flag6.png"
-                                                        alt="Bangladesh"
-                                                        className="w-16 h-12 rounded-4 border border-gray-100"
-                                                    />
-                                                    Bangladesh
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link
-                                                    to="#"
-                                                    className="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"
-                                                    onClick={() => handleLanguageChange("South Korea")}
-                                                >
-                                                    <img
-                                                        src="assets/images/thumbs/flag5.png"
-                                                        alt="South Korea"
-                                                        className="w-16 h-12 rounded-4 border border-gray-100"
-                                                    />
-                                                    South Korea
-                                                </Link>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li className="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
-                                        {/* Display the selected currency */}
-                                        <Link to="#" className="selected-text text-heading text-sm py-8">
-                                            {selectedCurrency}
-                                        </Link>
-                                        <ul className="selectable-text-list on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
-                                            <li>
-                                                <Link
-                                                    to="#"
-                                                    className="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"
-                                                    onClick={() => handleCurrencyChange("USD")}
-                                                >
-                                                    <img
-                                                        src="assets/images/thumbs/flag1.png"
-                                                        alt="USD"
-                                                        className="w-16 h-12 rounded-4 border border-gray-100"
-                                                    />
-                                                    USD
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link
-                                                    to="#"
-                                                    className="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"
-                                                    onClick={() => handleCurrencyChange("Yen")}
-                                                >
-                                                    <img
-                                                        src="assets/images/thumbs/flag2.png"
-                                                        alt="Yen"
-                                                        className="w-16 h-12 rounded-4 border border-gray-100"
-                                                    />
-                                                    Yen
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link
-                                                    to="#"
-                                                    className="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"
-                                                    onClick={() => handleCurrencyChange("Franc")}
-                                                >
-                                                    <img
-                                                        src="assets/images/thumbs/flag3.png"
-                                                        alt="Franc"
-                                                        className="w-16 h-12 rounded-4 border border-gray-100"
-                                                    />
-                                                    Franc
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link
-                                                    to="#"
-                                                    className="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"
-                                                    onClick={() => handleCurrencyChange("EURO")}
-                                                >
-                                                    <img
-                                                        src="assets/images/thumbs/flag4.png"
-                                                        alt="EURO"
-                                                        className="w-16 h-12 rounded-4 border border-gray-100"
-                                                    />
-                                                    EURO
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link
-                                                    to="#"
-                                                    className="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"
-                                                    onClick={() => handleCurrencyChange("BDT")}
-                                                >
-                                                    <img
-                                                        src="assets/images/thumbs/flag6.png"
-                                                        alt="BDT"
-                                                        className="w-16 h-12 rounded-4 border border-gray-100"
-                                                    />
-                                                    BDT
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link
-                                                    to="#"
-                                                    className="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"
-                                                    onClick={() => handleCurrencyChange("WON")}
-                                                >
-                                                    <img
-                                                        src="assets/images/thumbs/flag5.png"
-                                                        alt="WON"
-                                                        className="w-16 h-12 rounded-4 border border-gray-100"
-                                                    />
-                                                    WON
-                                                </Link>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
+                              
                                 {/* Dropdown Select End */}
                             </div>
                             <div className="me-8 d-lg-none d-block">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Grid, Tab, TabList, TabPanel, TabPanels, Tabs, Button, Table, Thead, Tbody, Tr, Th, Td, Badge, Card } from "@chakra-ui/react";
+import { Box, Grid, Tab, TabList, TabPanel, TabPanels, Tabs, Button, Table, Thead, Tbody, Tr, Th, Td, Badge, Card, Image, Flex } from "@chakra-ui/react";
 
 // Custom components
 // import Banner from "views/admin/profile/components/Banner"; // Adjust the import as needed
@@ -19,6 +19,7 @@ function CategoryOverview() {
     Description: string;
     ImageURL: string;
     status: string;
+    product_count:number;
     location: string;
 
   }
@@ -121,89 +122,156 @@ function CategoryOverview() {
       console.error('Error during category creation:', error);
     }
   };
-
+  const delete_category = async (id: string) => {
+    try {
+      const response = await fetch('http://localhost:3000/api/delete-category', {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json', // Ensure the server knows the data type being sent
+        },
+        body: JSON.stringify({
+          categoryId: id // Correct the key for consistency
+        }),
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        alert('Xóa sản phẩm thành công'); // Consider translating for consistency
+        getdatcategory(); // Fetch updated categories after deletion
+      } else {
+        console.error('Failed to delete category:', response.status);
+        alert('Xóa sản phẩm thất bại vì đang có sản phẩm');
+      }
+    } catch (error) {
+      console.error('Error during category deletion:', error);
+      alert('Đã xảy ra lỗi trong quá trình xóa sản phẩm'); // Provide user feedback on errors
+    }
+  };
+  
   return (
     <Box pt={{ base: "20px", md: "80px", xl: "80px" }}>
       <Card p={5} mb={{ base: "0px", lg: "40px" }}>
         <Grid mb={{ base: "0px", lg: "40px" }}>
           <Box mt={5}>
-            <Tabs variant="soft-rounded" colorScheme="teal">
-              <TabList>
-                {showDatatable.map((category) => (
-                  <Tab key={category.CategoryID} onClick={() => setSelectedCategory(category)}>
-                    <img
-                      src={`http://localhost:3000/uploads/${category.ImageURL}`}
-                      alt={category.CategoryName}
-                      width="25px"
-                      className="me-2"
-                    />
-                    {category.CategoryName}
-                  </Tab>
-                ))}
-                <Button colorScheme="blue" ml={3} onClick={() => setShowForm(!showForm)}>
-                  Tạo chuyên mục cha
-                </Button>
-              </TabList>
+          <Tabs variant="soft-rounded" colorScheme="teal">
+  <Flex justify="space-between" align="center" wrap="wrap">
+    <TabList flexWrap="wrap" my="20px">
+      {showDatatable.map((category) => (
+        <Tab
+          key={category.CategoryID}
+          onClick={() => setSelectedCategory(category)}
+          fontSize={["sm", "md", "lg"]} // Responsive font size
+        >
+          <Image
+            src={`http://localhost:3000/uploads/${category.ImageURL}`}
+            alt={category.CategoryName}
+            boxSize={["20px", "25px", "30px"]} // Responsive image size
+            borderRadius="full"
+            mr="2"
+          />
+          {category.CategoryName}
+        </Tab>
+      ))}
+      <Button
+        colorScheme="blue"
+        onClick={() => setShowForm(!showForm)}
+        mt={["10px", "0px"]} // Adds space on smaller screens
+      >
+        Tạo chuyên mục cha
+      </Button>
+    </TabList>
+  </Flex>
 
-              <TabPanels>
-                {showDatatable.map((category) => (
-                  <TabPanel key={category.CategoryID}>
-                    <Table variant="striped" colorScheme="gray">
-                      <Thead>
-                        <Tr>
-                          <Th width="8%" color="white">Ưu tiên</Th>
-                          <Th color="white">Tên chuyên mục con</Th>
-                          <Th color="white">Liên kết tĩnh</Th>
-                          <Th color="white">Thống kê</Th>
-                          <Th color="white">Ảnh</Th>
-                          <Th color="white">Trạng thái</Th>
-                          <Th color="white">Thao tác</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {selectedCategory && (
-                          <Tr>
-                            <Td><input className="form-control" type="number" value={0} /></Td>
-                            <Td>{selectedCategory.CategoryName}</Td>
-                            <Td>{selectedCategory.Description}</Td>
-                            <Td>
-                              <Badge colorScheme="blue">Sản phẩm: {selectedCategory.status}</Badge>
-                            </Td>
-                            <Td><img src={`http://localhost:3000/uploads/${selectedCategory.ImageURL}`} width="40px" alt={selectedCategory.CategoryName} /></Td>
-                            <Td>
-                              <select
-                                className="form-control"
-                                value={selectedCategory.status}
-                                onChange={(e) => {
-                                  const newStatus = e.target.value;
-                                  setCategoryData(prev => ({
-                                    ...prev,
-                                    status: newStatus,
-                                  }));
-                                }}
-                              >
-                                <option value="1">ON</option>
-                                <option value="0">OFF</option>
-                              </select>
-                            </Td>
+  <TabPanels>
+    {showDatatable.map((category) => (
+      <TabPanel key={category.CategoryID}>
+        
+        <Table variant="striped" colorScheme="gray" width="100%">
+          <Thead>
+            <Tr>
+              <Th width="8%" color="black">Ưu tiên</Th>
+              <Th color="black">Tên chuyên mục con</Th>
+              <Th color="black">Liên kết tĩnh</Th>
+              <Th color="black">Thống kê Sản phẩm</Th>
+              <Th color="black">Ảnh</Th>
+              <Th color="black">Trạng thái</Th>
+              <Th color="black">Thao tác</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {selectedCategory && (
+              <Tr>
+                <Td>
+                  <input
+                    className="form-control"
+                    type="number"
+                    value={selectedCategory.location}
+                    style={{ width: "100%" }} // Responsive input
+                  />
+                </Td>
+                <Td>{selectedCategory.CategoryName}</Td>
+                <Td>{selectedCategory.Description}</Td>
+                <Td>
+                  <Badge colorScheme="blue">
+                    Sản phẩm: {selectedCategory.product_count}
+                  </Badge>
+                </Td>
+                <Td>
+                  <img
+                    src={`http://localhost:3000/uploads/${selectedCategory.ImageURL}`}
+                    width="40px"
+                    alt={selectedCategory.CategoryName}
+                    style={{ maxWidth: "100%" }} // Make image responsive
+                  />
+                </Td>
+                <Td>
+                  <select
+                    className="form-control"
+                    value={selectedCategory.status}
+                    onChange={(e) => {
+                      const newStatus = e.target.value;
+                      setCategoryData((prev) => ({
+                        ...prev,
+                        status: newStatus,
+                      }));
+                    }}
+                    style={{ width: "100%" }} // Responsive select box
+                  >
+                    <option value="1">ON</option>
+                    <option value="0">OFF</option>
+                  </select>
+                </Td>
 
-                            <Td>
-                              <a
-                                href={`http://localhost:3001/admin/category-edit?id=${selectedCategory.CategoryID}`}
-                                className="btn btn-primary"
-                              >
-                                Edit
-                              </a>
-                              <Button size="sm" colorScheme="red" ml={2}>Delete</Button>
-                            </Td>
-                          </Tr>
-                        )}
-                      </Tbody>
-                    </Table>
-                  </TabPanel>
-                ))}
-              </TabPanels>
-            </Tabs>
+                <Td>
+                  <Button
+                    as="a"
+                    href={`http://localhost:3001/admin/category-edit?id=${selectedCategory?.CategoryID}`}
+                    colorScheme="blue"
+                    size={["xs", "sm", "md"]} // Responsive button size
+                  >
+                    Edit
+                  </Button>
+
+                  <Button
+    size={["xs", "sm", "md"]} // Responsive button size
+    colorScheme="red"
+    ml={2}
+    onClick={() => delete_category(selectedCategory.CategoryID)} // Use an arrow function to pass the ID
+>
+    Delete
+</Button>
+
+                </Td>
+              </Tr>
+            )}
+          </Tbody>
+        </Table>
+      </TabPanel>
+    ))}
+  </TabPanels>
+</Tabs>
+
           </Box>
 
           {/* Form for creating new category */}
