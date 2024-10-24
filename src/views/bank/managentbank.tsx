@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box, Table, Thead, Tbody, Tr, Th, Td, Button, Image, Heading, SimpleGrid, 
+  Box, Table, Thead, Tbody, Tr, Th, Td, Button, Image, Heading, SimpleGrid,
   useColorModeValue, FormControl, FormLabel, Input, VStack
 } from "@chakra-ui/react";
-import { BankAccount } from '../../model/BankModel.ts'; 
-import { BankAccountController } from '../../controller/bankController.ts'; 
-import Swal from 'sweetalert2'; 
+import { BankAccount } from '../../model/BankModel.ts';
+import { BankAccountController } from '../../controller/bankController.ts';
+import Swal from 'sweetalert2';
 
 export default function BankManagement() {
   const tableBg = useColorModeValue("white", "gray.800");
-  
-  const [bankData, setBankData] = useState<BankAccount[]>([]); 
+
+  const [bankData, setBankData] = useState<BankAccount[]>([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null); 
+  const [editId, setEditId] = useState<string | null>(null);
 
   const [newBankAccount, setNewBankAccount] = useState<BankAccount>({
-    id: Date.now(), 
+    id: Date.now(),
     account_number: '',
     account_holder: '',
     transaction_description: '',
-    image_url: 'https://via.placeholder.com/50', 
+    image_url: 'https://via.placeholder.com/50',
     bank_name: '',
     created_at: new Date(),
   });
@@ -52,7 +52,7 @@ export default function BankManagement() {
         } else {
           response = await BankAccountController.createBankAccount(newBankAccount);
         }
-        
+
         if (response) {
           Swal.fire({
             title: 'Success!',
@@ -112,11 +112,11 @@ export default function BankManagement() {
 
   const resetForm = () => {
     setNewBankAccount({
-      id: Date.now(), 
+      id: Date.now(),
       account_number: '',
       account_holder: '',
       transaction_description: '',
-      image_url: 'https://via.placeholder.com/50', 
+      image_url: 'https://via.placeholder.com/50',
       bank_name: '',
       created_at: new Date(),
     });
@@ -159,14 +159,15 @@ export default function BankManagement() {
             placeholder="Nhập tên ngân hàng"
           />
         </FormControl>
-        <Button colorScheme="teal" type="submit" w="full">
+        <Button colorScheme="teal" type="submit" w="full"           borderRadius="md"
+        >
           {isEditing ? 'Cập Nhật Tài Khoản' : 'Thêm Tài Khoản'}
         </Button>
       </VStack>
 
       <SimpleGrid columns={1} gap="20px" mb="20px">
         <Box w="100%" bg={tableBg} borderRadius="lg" boxShadow="md" p="20px">
-          <Table variant="striped" colorScheme="teal">
+          <Table >
             <Thead>
               <Tr>
                 <Th>Số Tài Khoản</Th>
@@ -186,8 +187,10 @@ export default function BankManagement() {
                   <Td><Image src={bank.image_url} alt={bank.bank_name} boxSize="50px" /></Td>
                   <Td>{bank.bank_name}</Td>
                   <Td>
-                    <Button colorScheme="blue" onClick={() => handleEditBankAccount(bank)}>Sửa</Button>
-                    <Button colorScheme="red" ml={2} onClick={() => handleDeleteBankAccount(bank.id.toString())}>Xóa</Button>
+                    <Button colorScheme="blue" borderRadius="md"
+                      onClick={() => handleEditBankAccount(bank)}>Sửa</Button>
+                    <Button colorScheme="red" borderRadius="md"
+                      ml={2} onClick={() => handleDeleteBankAccount(bank.id.toString())}>Xóa</Button>
                   </Td>
                 </Tr>
               ))}

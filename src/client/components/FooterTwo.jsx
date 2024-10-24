@@ -10,41 +10,40 @@ const FooterTwo = () => {
                         <div className="footer-item__logo">
                             <Link to="/">
                                 {" "}
-                                <img src="assets/images/logo/logo-two-black.png" alt="" />
+                                <img src="assets/images/logo/F.png" alt="" />
                             </Link>
                         </div>
                         <p className="mb-24">
-                            Marketpro become the largest computer parts, gaming pc parts, and
-                            other IT related products.
+                            We're Grocery Shop, an innovative team of food supliers.                        
                         </p>
                         <div className="flex-align gap-16 mb-16">
-                            <span className="w-32 h-32 flex-center rounded-circle border border-gray-100 text-main-two-600 text-md flex-shrink-0">
+                            <span className="w-32 h-32 flex-center rounded-circle text-white text-md flex-shrink-0" style={{backgroundColor:'green'}}>
                                 <i className="ph-fill ph-phone-call" />
                             </span>
                             <Link
                                 to="/tel:+00123456789"
                                 className="text-md text-gray-900 hover-text-main-600"
                             >
-                                +00 123 456 789
+                                0879594661
                             </Link>
                         </div>
                         <div className="flex-align gap-16 mb-16">
-                            <span className="w-32 h-32 flex-center rounded-circle border border-gray-100 text-main-two-600 text-md flex-shrink-0">
+                            <span className="w-32 h-32 flex-center rounded-circle text-white text-md flex-shrink-0" style={{backgroundColor:'green'}}>
                                 <i className="ph-fill ph-envelope" />
                             </span>
                             <Link
-                                to="/mailto:support24@marketpro.com"
+                                to="/mailto:khaidmps34940@fpt.edu.vn"
                                 className="text-md text-gray-900 hover-text-main-600"
                             >
-                                support24@marketpro.com
+                                khaidmps34940@fpt.edu.vn
                             </Link>
                         </div>
                         <div className="flex-align gap-16 mb-16">
-                            <span className="w-32 h-32 flex-center rounded-circle border border-gray-100 text-main-two-600 text-md flex-shrink-0">
+                            <span className="w-32 h-32 flex-center rounded-circle text-white text-md flex-shrink-0" style={{backgroundColor:'green'}}>
                                 <i className="ph-fill ph-map-pin" />
                             </span>
                             <span className="text-md text-gray-900 ">
-                                789 Inner Lane, California, USA
+                            Công Viên Phần Mềm Quang Trung - Quận 12 - TP.HCM
                             </span>
                         </div>
                     </div>
@@ -141,19 +140,11 @@ const FooterTwo = () => {
                             </li>
                         </ul>
                     </div>
-                  
-                    
+
+
                     <div className="footer-item">
                         <h6 className="">Mua Hàng Ưu Đãi</h6>
                         <p className="mb-16">Marketpro App is available. Get it now</p>
-                        <div className="flex-align gap-8 my-32">
-                            <Link to="/https://www.apple.com/store" className="">
-                                <img src="assets/images/thumbs/store-img1.png" alt="" />
-                            </Link>
-                            <Link to="/https://play.google.com/store/apps?hl=en" className="">
-                                <img src="assets/images/thumbs/store-img2.png" alt="" />
-                            </Link>
-                        </div>
                         <ul className="flex-align gap-16">
                             <li>
                                 <Link

@@ -48,49 +48,46 @@ export default function Main() {
 
   return (
     <ChakraProvider theme={currentTheme}>
-            <RouteScrollToTop />
-            <PhosphorIconInit />
+      <RouteScrollToTop />
+      <PhosphorIconInit />
       <Routes>
-      <Route path="auth/*" element={<AuthLayout />} />
-
-{/* Router cho admin và các trang bên trong */}
-<Route path="admin/*" element={<AdminLayout theme={currentTheme} setTheme={setCurrentTheme} />}>
-  <Route path="category-management" element={<CategoryManagement />} />
-  <Route path="category-edit" element={<CategoryManagement />} />
-  <Route path="products-management" element={<Product />} />
-  <Route path="products-create" element={<Productcreate />} />
-  <Route path="voucher-management" element={<VoucherManagement />} />
-  {/* <Route path="voucher-update" element={<VoucherManagement />} /> */}
-</Route>
+        <Route path="auth/*" element={<AuthLayout />} />
+        {/* Router cho admin và các trang bên trong */}
+        <Route path="/admin/*" element={<AdminLayout theme={currentTheme} setTheme={setCurrentTheme} />}>
+          <Route path="category-management" element={<CategoryManagement />} />
+          <Route path="category-edit" element={<CategoryManagement />} />
+          <Route path="products-management" element={<Product />} />
+          <Route path="products-create" element={<Productcreate />} />
+          <Route path="voucher-management" element={<VoucherManagement />} />
+          {/* <Route path="voucher-update" element={<VoucherManagement />} /> */}
+        </Route>
 
 
         {/* Route cho client */}
         <Route path="client" element={<HomePageTwo />} />
         <Route exact path="/home1" element={<HomePageOne />} />
-
-            <Route exact path="/" element={<HomePageTwo />} />
-            <Route exact path="/shop" element={<ShopPage />} />
-            <Route exact path="/profile" element={<Profile />} />
-            <Route exact path="/login" element={<ProtectedRoute element={LoginPage} />} />
-            <Route exact path="/register" element={<ProtectedRoute element={RegisterPage} />} />
-            <Route exact path="/product-details" element={<ProductDetailsPageTwo />} />
-            <Route exact path="/product-details-one" element={<ProductDetailsPageOne />} />
-            <Route exact path="/cart" element={<CartPage />} />
-            <Route exact path="/checkout" element={<CheckoutPage />} />
-            <Route exact path="/account" element={<AccountPage />} />
-            <Route exact path="/blog" element={<BlogPage />} />
-            <Route exact path="/blog-details" element={<BlogDetailsPage />} />
-            <Route exact path="/contact" element={<ContactPage />} />
-            <Route exact path="/forgot-password" element={<Forgotpassword />} />
-            <Route exact path="/password-new" element={<TokenPassword />} />
-
+        <Route exact path="/" element={<HomePageTwo />} />
+        <Route exact path="/shop" element={<ShopPage />} />
+        <Route exact path="/profile" element={<Profile />} />
+        <Route exact path="/login" element={<ProtectedRoute element={LoginPage} />} />
+        <Route exact path="/register" element={<ProtectedRoute element={RegisterPage} />} />
+        <Route exact path="/product-details" element={<ProductDetailsPageTwo />} />
+        <Route exact path="/product-details-one" element={<ProductDetailsPageOne />} />
+        <Route exact path="/cart" element={<CartPage />} />
+        <Route exact path="/checkout" element={<CheckoutPage />} />
+        <Route exact path="/account" element={<AccountPage />} />
+        <Route exact path="/blog" element={<BlogPage />} />
+        <Route exact path="/blog-details" element={<BlogDetailsPage />} />
+        <Route exact path="/contact" element={<ContactPage />} />
+        <Route exact path="/forgot-password" element={<Forgotpassword />} />
+        <Route exact path="/password-new" element={<TokenPassword />} />
         <Route
           path="rtl/*"
           element={
             <RTLLayout theme={currentTheme} setTheme={setCurrentTheme} />
           }
         />
-        
+
         {/* Redirect từ root đến admin */}
         <Route path="/" element={<Navigate to="/client" replace />} />
       </Routes>

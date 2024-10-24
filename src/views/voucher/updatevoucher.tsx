@@ -192,7 +192,8 @@ export default function VoucherForm() {
               />
             </FormControl>
 
-            <Button type="submit" colorScheme="teal" width="full">
+            <Button type="submit" colorScheme="blue"          borderRadius="md"
+ width="full">
               Cập Nhật
             </Button>
           </VStack>

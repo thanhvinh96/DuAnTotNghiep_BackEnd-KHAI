@@ -23,9 +23,9 @@ export default function CategoryEdit() {
 
     const updateCategory = async (event: React.FormEvent) => {
         event.preventDefault();
-        const queryString = location.search; 
+        const queryString = location.search;
         const urlParams = new URLSearchParams(queryString);
-        const id = urlParams.get('id'); 
+        const id = urlParams.get('id');
 
         try {
             const formData = new FormData();
@@ -57,17 +57,17 @@ export default function CategoryEdit() {
 
     useEffect(() => {
         const getData = async () => {
-            const queryString = location.search; 
+            const queryString = location.search;
             const urlParams = new URLSearchParams(queryString);
-            const id = urlParams.get('id'); 
-    
+            const id = urlParams.get('id');
+
             try {
                 const response = await fetch(`http://localhost:3000/api/get-category/${id}`, {
                     method: 'GET',
                 });
-    
+
                 if (response.ok) {
-                    const data = await response.json(); 
+                    const data = await response.json();
                     setDataCategory({
                         CategoryName: data[0]['CategoryName'],
                         Description: data[0]['Description'],
@@ -82,8 +82,8 @@ export default function CategoryEdit() {
                 console.error('Error fetching data:', error);
             }
         };
-    
-        getData(); 
+
+        getData();
     }, [location]);
 
     return (
@@ -107,16 +107,16 @@ export default function CategoryEdit() {
                                                     onChange={(e) => setDataCategory({ ...dataCategory, location: e.target.value })} />
                                                 <small>Lưu ý: Ưu tiên càng cao, chuyên mục càng hiển thị trên cùng</small>
                                             </div>
-                                            
+
                                             <div className="mb-4">
                                                 <label className="form-label" htmlFor="name">Tên chuyên mục:</label>
-                                                <input 
-                                                    type="text" 
-                                                    className="form-control" 
-                                                    name="name" 
-                                                    required 
-                                                    value={dataCategory.CategoryName} 
-                                                    onChange={(e) => setDataCategory({ ...dataCategory, CategoryName: e.target.value })} 
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    name="name"
+                                                    required
+                                                    value={dataCategory.CategoryName}
+                                                    onChange={(e) => setDataCategory({ ...dataCategory, CategoryName: e.target.value })}
                                                 />
                                             </div>
 
@@ -127,20 +127,20 @@ export default function CategoryEdit() {
                                             </div>
                                             <div className="mb-4">
                                                 <label className="form-label" htmlFor="description">Description SEO:</label>
-                                                <textarea 
-                                                    className="form-control" 
-                                                    name="description" 
-                                                    value={dataCategory.Description} 
+                                                <textarea
+                                                    className="form-control"
+                                                    name="description"
+                                                    value={dataCategory.Description}
                                                     onChange={(e) => setDataCategory({ ...dataCategory, Description: e.target.value })}
                                                 />
                                             </div>
                                             <div className="mb-4">
                                                 <label className="form-label" htmlFor="status">Status:</label>
-                                                <select 
-                                                    className="form-control" 
-                                                    name="status" 
-                                                    required 
-                                                    value={dataCategory.status} 
+                                                <select
+                                                    className="form-control"
+                                                    name="status"
+                                                    required
+                                                    value={dataCategory.status}
                                                     onChange={(e) => setDataCategory({ ...dataCategory, status: e.target.value })}
                                                 >
                                                     <option value="1">ON</option>
@@ -151,13 +151,38 @@ export default function CategoryEdit() {
                                     </div>
 
                                     <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-                                        <Button as="a" href="https://zshopclone7.cmsnt.net/?module=admin&amp;action=categories" colorScheme="red">
+                                        <Button
+                                            as="a"
+                                            href="https://zshopclone7.cmsnt.net/?module=admin&amp;action=categories"
+                                            colorScheme="red"
+                                            size={["xs", "sm", "md"]}
+                                            mt={["10px", "0px"]} // Khoảng cách trên giữa các nút
+                                            ml={["20px", "0px"]} // Khoảng cách 0 bên trái cho nút Back
+                                            width={["100%", "auto"]} // Đặt chiều rộng 100% trên màn hình nhỏ, tự động trên màn hình lớn
+                                            height={["50px", "50px"]} // Chiều cao cố định cho nút
+                                            borderRadius="md" // Hình vuông với góc bo nhẹ
+                                            fontSize={["sm", "md"]} // Kích thước chữ thay đổi theo kích thước màn hình
+                                            display="flex" // Để sử dụng justifyContent và alignItems
+                                            alignItems="center" // Căn giữa theo chiều dọc
+                                            justifyContent="center" // Căn giữa theo chiều ngang
+                                        >
                                             <i className="fa fa-fw fa-undo me-1"></i> Back
                                         </Button>
-                                        <Button type="submit" colorScheme="blue">
+
+                                        <Button
+                                            type="submit"
+                                            colorScheme="blue"
+                                            width={["100%", "auto"]} // Đặt chiều rộng 100% trên màn hình nhỏ, tự động trên màn hình lớn
+                                            height={["50px", "50px"]} // Chiều cao cố định cho nút
+                                            borderRadius="md" // Hình vuông với góc bo nhẹ
+                                            display="flex" // Để sử dụng justifyContent và alignItems
+                                            alignItems="center" // Căn giữa theo chiều dọc
+                                            justifyContent="center" // Căn giữa theo chiều ngang
+                                        >
                                             <i className="fa fa-fw fa-save me-1"></i> Save
                                         </Button>
                                     </Grid>
+
                                 </form>
                             </div>
                         </div>

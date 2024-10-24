@@ -19,7 +19,7 @@ function CategoryOverview() {
     Description: string;
     ImageURL: string;
     status: string;
-    product_count:number;
+    product_count: number;
     location: string;
 
   }
@@ -133,7 +133,7 @@ function CategoryOverview() {
           categoryId: id // Correct the key for consistency
         }),
       });
-  
+
       if (response.ok) {
         const result = await response.json();
         console.log(result);
@@ -148,220 +148,237 @@ function CategoryOverview() {
       alert('Đã xảy ra lỗi trong quá trình xóa sản phẩm'); // Provide user feedback on errors
     }
   };
-  
+
   return (
     <Box pt={{ base: "20px", md: "80px", xl: "80px" }}>
       <Card p={5} mb={{ base: "0px", lg: "40px" }}>
-        <Grid mb={{ base: "0px", lg: "40px" }}>
+        <Flex justify="space-between" align="center" wrap="wrap">
+          <Tabs variant="soft-rounded" colorScheme="teal" width="100%">
+            <TabList flexWrap="wrap" my="20px">
+              {showDatatable.map((category) => (
+                <Tab
+                  key={category.CategoryID}
+                  onClick={() => setSelectedCategory(category)}
+                  fontSize={["sm", "md", "lg"]}
+                  mx={2}
+                  mb={4} // Thêm margin-bottom để tạo khoảng cách giữa các tab
+
+                  borderColor={selectedCategory?.CategoryID === category.CategoryID ? "blue.500" : "gray.200"}
+                  borderRadius="md"
+                  p={3}
+                  bg="white"
+                  borderWidth={1}
+                  shadow="md"
+                  _selected={{ bg: "blue.100", color: "blue.800" }}
+                  _hover={{ bg: "blue.50", transform: "scale(1.02)" }}
+                  transition="transform 0.2s ease"
+                >
+                  <Image
+                    src={category.ImageURL}
+                    alt={category.CategoryName}
+                    boxSize={["25px", "30px"]}
+                    borderRadius="full"
+                    mr={2}
+                  />
+                  {category.CategoryName}
+                </Tab>
+              ))}
+              <Button
+                colorScheme="blue"
+                onClick={() => setShowForm(!showForm)}
+                mt={["10px", "0px"]}
+                width={["100%", "auto"]} // Đặt chiều rộng 100% trên màn hình nhỏ, tự động trên màn hình lớn
+                height={["40px", "50px"]} // Chiều cao thay đổi theo kích thước màn hình
+                borderRadius="md" // Hình vuông với góc bo nhẹ
+                fontSize={["sm", "md"]} // Kích thước chữ thay đổi theo kích thước màn hình
+                p="5px" // Thêm padding 5px
+              >
+                Tạo chuyên mục cha
+              </Button>
+
+            </TabList>
+
+
+
+            <TabPanels>
+              {showDatatable.map((category) => (
+                <TabPanel key={category.CategoryID}>
+                  {/* Container có thể cuộn cho bảng */}
+                  <Box overflowX="auto">
+                    <Table variant="striped" colorScheme="gray" width="100%">
+                      <Thead>
+                        <Tr>
+                          <Th width="8%">Ưu tiên</Th>
+                          <Th>Tên chuyên mục con</Th>
+                          <Th>Liên kết tĩnh</Th>
+                          <Th>Thống kê Sản phẩm</Th>
+                          <Th>Ảnh</Th>
+                          <Th>Trạng thái</Th>
+                          <Th>Thao tác</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {selectedCategory && (
+                          <Tr>
+                            <Td>
+                              <input
+                                className="form-control"
+                                type="number"
+                                value={selectedCategory.location}
+                                style={{ width: "100%" }}
+                              />
+                            </Td>
+                            <Td>{selectedCategory.CategoryName}</Td>
+                            <Td>{selectedCategory.Description}</Td>
+                            <Td>
+                              <Badge colorScheme="blue">
+                                Sản phẩm: {selectedCategory.product_count}
+                              </Badge>
+                            </Td>
+                            <Td>
+                              <Image
+                                src={selectedCategory.ImageURL}
+                                width="40px"
+                                alt={selectedCategory.CategoryName}
+                                borderRadius="md"
+                              />
+                            </Td>
+                            <Td>
+                              <select
+                                className="form-control"
+                                value={selectedCategory.status}
+                                onChange={(e) => {
+                                  const newStatus = e.target.value;
+                                  setCategoryData((prev) => ({
+                                    ...prev,
+                                    status: newStatus,
+                                  }));
+                                }}
+                                style={{ width: "100%" }}
+                              >
+                                <option value="1">ON</option>
+                                <option value="0">OFF</option>
+                              </select>
+                            </Td>
+                            <Td>
+                              <Button
+                                colorScheme="blue"
+                                size={["xs", "sm", "md"]}
+                                as="a"
+                                href={`http://localhost:3001/admin/category-edit?id=${selectedCategory?.CategoryID}`}
+                                mt={["10px", "0px"]}
+                                width={["100%", "auto"]} // Đặt chiều rộng 100% trên màn hình nhỏ, tự động trên màn hình lớn
+                                height={["40px", "50px"]} // Chiều cao thay đổi theo kích thước màn hình
+                                borderRadius="md" // Hình vuông với góc bo nhẹ
+                                fontSize={["sm", "md"]} // Kích thước chữ thay đổi theo kích thước màn hình
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                colorScheme="red"
+                                size={["xs", "sm", "md"]}
+                                mt={["10px", "0px"]} // Khoảng cách trên giữa các nút
+                                ml={["20px", "20px", "20px"]} // Khoảng cách 20px bên trái cho nút Delete
+                                width={["100%", "auto"]} // Đặt chiều rộng 100% trên màn hình nhỏ, tự động trên màn hình lớn
+                                height={["40px", "50px"]} // Chiều cao thay đổi theo kích thước màn hình
+                                borderRadius="md" // Hình vuông với góc bo nhẹ
+                                fontSize={["sm", "md"]} // Kích thước chữ thay đổi theo kích thước màn hình
+                                onClick={() => delete_category(selectedCategory.CategoryID)}
+                              >
+                                Delete
+                              </Button>
+
+                            </Td>
+                          </Tr>
+                        )}
+                      </Tbody>
+                    </Table>
+                  </Box>
+                </TabPanel>
+              ))}
+            </TabPanels>
+
+          </Tabs>
+        </Flex>
+
+        {/* Form for creating new category */}
+        {showForm && (
           <Box mt={5}>
-          <Tabs variant="soft-rounded" colorScheme="teal">
-  <Flex justify="space-between" align="center" wrap="wrap">
-    <TabList flexWrap="wrap" my="20px">
-      {showDatatable.map((category) => (
-        <Tab
-          key={category.CategoryID}
-          onClick={() => setSelectedCategory(category)}
-          fontSize={["sm", "md", "lg"]} // Responsive font size
-        >
-          <Image
-            src={`http://localhost:3000/uploads/${category.ImageURL}`}
-            alt={category.CategoryName}
-            boxSize={["20px", "25px", "30px"]} // Responsive image size
-            borderRadius="full"
-            mr="2"
-          />
-          {category.CategoryName}
-        </Tab>
-      ))}
-      <Button
-        colorScheme="blue"
-        onClick={() => setShowForm(!showForm)}
-        mt={["10px", "0px"]} // Adds space on smaller screens
-      >
-        Tạo chuyên mục cha
-      </Button>
-    </TabList>
-  </Flex>
-
-  <TabPanels>
-    {showDatatable.map((category) => (
-      <TabPanel key={category.CategoryID}>
-        
-        <Table variant="striped" colorScheme="gray" width="100%">
-          <Thead>
-            <Tr>
-              <Th width="8%" color="black">Ưu tiên</Th>
-              <Th color="black">Tên chuyên mục con</Th>
-              <Th color="black">Liên kết tĩnh</Th>
-              <Th color="black">Thống kê Sản phẩm</Th>
-              <Th color="black">Ảnh</Th>
-              <Th color="black">Trạng thái</Th>
-              <Th color="black">Thao tác</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {selectedCategory && (
-              <Tr>
-                <Td>
-                  <input
-                    className="form-control"
-                    type="number"
-                    value={selectedCategory.location}
-                    style={{ width: "100%" }} // Responsive input
-                  />
-                </Td>
-                <Td>{selectedCategory.CategoryName}</Td>
-                <Td>{selectedCategory.Description}</Td>
-                <Td>
-                  <Badge colorScheme="blue">
-                    Sản phẩm: {selectedCategory.product_count}
-                  </Badge>
-                </Td>
-                <Td>
-                  <img
-                    src={`http://localhost:3000/uploads/${selectedCategory.ImageURL}`}
-                    width="40px"
-                    alt={selectedCategory.CategoryName}
-                    style={{ maxWidth: "100%" }} // Make image responsive
-                  />
-                </Td>
-                <Td>
-                  <select
-                    className="form-control"
-                    value={selectedCategory.status}
-                    onChange={(e) => {
-                      const newStatus = e.target.value;
-                      setCategoryData((prev) => ({
-                        ...prev,
-                        status: newStatus,
-                      }));
-                    }}
-                    style={{ width: "100%" }} // Responsive select box
-                  >
-                    <option value="1">ON</option>
-                    <option value="0">OFF</option>
-                  </select>
-                </Td>
-
-                <Td>
-                  <Button
-                    as="a"
-                    href={`http://localhost:3001/admin/category-edit?id=${selectedCategory?.CategoryID}`}
-                    colorScheme="blue"
-                    size={["xs", "sm", "md"]} // Responsive button size
-                  >
-                    Edit
-                  </Button>
-
-                  <Button
-    size={["xs", "sm", "md"]} // Responsive button size
-    colorScheme="red"
-    ml={2}
-    onClick={() => delete_category(selectedCategory.CategoryID)} // Use an arrow function to pass the ID
->
-    Delete
-</Button>
-
-                </Td>
-              </Tr>
-            )}
-          </Tbody>
-        </Table>
-      </TabPanel>
-    ))}
-  </TabPanels>
-</Tabs>
-
+            <Card p={5}
+               borderRadius="md"
+              
+               bg="white"
+               borderWidth={1}
+               shadow="md"
+               _selected={{ bg: "blue.100", color: "blue.800" }}
+               _hover={{ bg: "blue.50", transform: "scale(1.02)" }}
+               transition="transform 0.2s ease"
+            >
+              <form onSubmit={handleSubmit} encType="multipart/form-data">
+                <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+                  <Box>
+                    <label>Tên chuyên mục cha: <span className="text-danger">*</span></label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="CategoryName"
+                      onChange={handleToggleForm}
+                      placeholder="Nhập tên chuyên mục"
+                      required
+                    />
+                  </Box>
+                  <Box>
+                    <label>Vị trí mục cha: <span className="text-danger">*</span></label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="location"
+                      onChange={handleToggleForm}
+                      placeholder="Nhập tên chuyên mục"
+                      required
+                    />
+                  </Box>
+                  <Box>
+                    <label>Icon: <span className="text-danger">*</span></label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      name="ImageURL"
+                      onChange={handleToggleForm}
+                    />
+                  </Box>
+                  <Box>
+                    <label>Description SEO:</label>
+                    <textarea
+                      className="form-control"
+                      name="Description"
+                      onChange={handleTextareaChange}
+                    ></textarea>
+                  </Box>
+                  <Box>
+                    <label>Trạng thái: <span className="text-danger">*</span></label>
+                    <select
+                      className="form-control"
+                      name="status"
+                      onChange={handleToggleForm}
+                      required
+                    >
+                      <option value="1">ON</option>
+                      <option value="0">OFF</option>
+                    </select>
+                  </Box>
+                </Grid>
+                <Button type="submit" colorScheme="blue" mt={4}>
+                  <i className="fa fa-fw fa-plus me-1"></i> Submit
+                </Button>
+              </form>
+            </Card>
           </Box>
-
-          {/* Form for creating new category */}
-          {showForm && (
-            <Box mt={5}>
-              <div className="card custom-card">
-                <div className="card-body">
-                  <form onSubmit={handleSubmit} encType="multipart/form-data">
-                    <div className="row mb-4">
-                      <label className="col-sm-4 col-form-label">
-                        Tên chuyên mục cha: <span className="text-danger">*</span>
-                      </label>
-                      <div className="col-sm-8">
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="CategoryName"
-                          onChange={handleToggleForm}
-                          placeholder="Nhập tên chuyên mục"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="row mb-4">
-                      <label className="col-sm-4 col-form-label">
-                        Vị trí mục cha: <span className="text-danger">*</span>
-                      </label>
-                      <div className="col-sm-8">
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="location"
-                          onChange={handleToggleForm}
-                          placeholder="Nhập tên chuyên mục"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="row mb-4">
-                      <label className="col-sm-4 col-form-label">
-                        Icon: <span className="text-danger">*</span>
-                      </label>
-                      <div className="col-sm-8">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          name="ImageURL"
-                          onChange={handleToggleForm}
-                        />
-                      </div>
-                    </div>
-                    <div className="row mb-4">
-                      <label className="col-sm-4 col-form-label">Description SEO:</label>
-                      <div className="col-sm-12">
-                        <textarea
-                          className="form-control"
-                          name="Description"
-                          onChange={handleTextareaChange}
-                        ></textarea>
-                      </div>
-                    </div>
-                    <div className="row mb-4">
-                      <label className="col-sm-4 col-form-label">
-                        Trạng thái: <span className="text-danger">*</span>
-                      </label>
-                      <div className="col-sm-8">
-                        <select
-                          className="form-control"
-                          name="status"
-                          onChange={handleToggleForm}
-                          required
-                        >
-                          <option value="1">ON</option>
-                          <option value="0">OFF</option>
-                        </select>
-                      </div>
-                    </div>
-                    <Button type="submit" colorScheme="blue">
-                      <i className="fa fa-fw fa-plus me-1"></i> Submit
-                    </Button>
-                  </form>
-                </div>
-
-              </div>
-            </Box>
-          )}
-        </Grid>
+        )}
       </Card>
     </Box>
   );
+
 }
 export default CategoryOverview;
 

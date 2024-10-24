@@ -70,7 +70,7 @@ const OrderTable = ({ orders, onViewDetails }) => (
   <div className="table-scroll table-wrapper" style={{ marginTop: '20px' }}>
     <table className="table fs-sm text-nowrap table-hover mb-0">
       <thead>
-        <tr style={{ padding: '20px', color: 'white' }}>
+        <tr style={{ padding: '20px', color: 'white',backgroundColor:'green' }}>
           {['Mã đơn hàng', 'Thời gian', 'Tổng tiền', 'Trạng thái', 'Trạng thái thanh toán', 'Hành động'].map((header, index) => (
             <th key={index} className="text-center" style={{ padding: '20px', color: 'white' }}>
               {header}

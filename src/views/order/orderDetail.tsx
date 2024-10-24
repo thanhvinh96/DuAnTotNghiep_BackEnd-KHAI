@@ -83,12 +83,15 @@ const OrderDetail: React.FC = () => {
     OrderStatus: string;
     PaymentStatus: string;
     UserID: string | null; // Có thể UserID là string hoặc null
-  }>({
+    Product: string[]; // Khai báo kiểu cho Product
+}>({
     OrderID: 0,
     OrderStatus: '',
     PaymentStatus: '',
-    UserID: '', // Thêm UserID vào đây
-  });
+    UserID: null, 
+    Product: [] 
+});
+
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
     const { id, value } = e.target;
     setdatapost((prevState) => ({
@@ -96,14 +99,15 @@ const OrderDetail: React.FC = () => {
       [id]: value,
       UserID: orderDetailData.UserID,
       OrderID: orderDetailData.OrderID, // Sử dụng giá trị OrderID từ orderDetailData
+      Products: orderDetailData.Products, // Sử dụng giá trị OrderID từ orderDetailData
     }));
     
   };
   
   const handleUpdate = async () => {
     try {
-      console.log(datapost)
-   
+      // console.log(datapost)
+      console.log(orderDetailData.Products);
       const response = await OrderService.updateStatus(datapost);
       
       if (response.status===true) {
@@ -149,9 +153,24 @@ const OrderDetail: React.FC = () => {
 
         <FormControl mb="20px">
           <FormLabel htmlFor="orderDate">Ngày Đặt Hàng</FormLabel>
-          <Input id="orderDate" value={orderDetailData.TimeBuy} readOnly bg={inputBg} />
-        </FormControl>
+          <Input
+  id="orderDate"
+  value={new Date(orderDetailData.TimeBuy).toLocaleString('vi-VN', {
+    day: '2-digit', 
+    month: '2-digit', 
+    year: 'numeric', 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    second: '2-digit', 
+    hour12: false,
+    timeZone: 'Asia/Ho_Chi_Minh' // Thêm tùy chọn này để chuyển đổi múi giờ
+  })}
+  readOnly
+  bg={inputBg}
+/>
 
+        </FormControl>
+       
         <FormControl mb="20px">
           <FormLabel htmlFor="totalAmount">Tổng Giá Trị Đơn Hàng</FormLabel>
           <Input id="totalAmount" value={formatCurrency(orderDetailData.TotalAmount)} readOnly bg={inputBg} />
@@ -176,6 +195,7 @@ const OrderDetail: React.FC = () => {
 
         <FormControl mb="20px">
           <FormLabel htmlFor="paymentStatus">Trạng Thái Thanh Toán</FormLabel>
+
           <Select id="paymentStatus" value={orderDetailData.PaymentStatus} onChange={handleChange} bg={inputBg}>
             <option value="Đã thanh toán">Đã thanh toán</option>
             <option value="Chưa thanh toán">Chưa thanh toán</option>

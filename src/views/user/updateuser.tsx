@@ -14,8 +14,10 @@ import {
   ModalContent,
   ModalHeader,
   ModalCloseButton,
+  Card,
   ModalBody,
   ModalFooter,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import { UserController } from '../../controller/userController.tsx';
@@ -95,19 +97,12 @@ export default function UserForm() {
       onOpen();
     }
   };
-  
+  const tableBg = useColorModeValue("white", "gray.800");
+
   return (
     <Box pt={{ base: "20px", md: "80px", xl: "80px" }}>
-      <Box
-        pt={{ base: "130px", md: "20px", xl: "80px" }}
-        bg="white"
-        p={6}
-        borderRadius="lg"
-        boxShadow="md"
-      >
-        <Text fontSize="2xl" fontWeight="700" mb="20px">
-          User Registration
-        </Text>
+    <Card p={5} mb={{ base: "0px", lg: "40px" }} style={{ height: 'auto', width: '100%' }}>
+      <Box w="100%" bg={tableBg} borderRadius="lg" boxShadow="md" p="20px">
         <form onSubmit={handleSubmit}>
           <VStack spacing={4} align="stretch">
             {/* Username */}
@@ -188,12 +183,17 @@ export default function UserForm() {
               </Select>
             </FormControl>
 
-            <Button type="submit" colorScheme="teal" width="full">
-              Submit
-            </Button>
+            <Button
+            type="submit"
+            colorScheme="teal"
+            size="lg"
+            width="full"
+            borderRadius="md"
+          >
+            Cập Nhật Thông Tin Tài Khoản
+          </Button>
           </VStack>
         </form>
-      </Box>
 
       {/* Modal for success/error message */}
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -211,6 +211,8 @@ export default function UserForm() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      </Box>
+      </Card>
     </Box>
   );
 }

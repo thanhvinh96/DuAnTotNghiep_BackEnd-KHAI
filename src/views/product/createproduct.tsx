@@ -111,14 +111,11 @@ export default function ProductAdd() {
 
     return (
         <Box pt={{ base: "20px", md: "80px", xl: "80px" }}>
-        <Card p={5} mb={{ base: "0px", lg: "40px" }} style={{ height: 'auto', width: '100%' }}>
-            <div className="card-title">
-                THÊM SẢN PHẨM MỚI
-            </div>
+        <Card p={5} mb={{ base: "0px", lg: "40px" }} borderRadius="md" boxShadow="md">
             <form onSubmit={handleSubmit}>
-                <Grid templateColumns="1fr" gap={6}>
+                <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
                     
-                    {/* Product Name */}
+                    {/* Tên Sản Phẩm */}
                     <FormControl>
                         <FormLabel htmlFor="productName">Tên Sản phẩm</FormLabel>
                         <Input
@@ -126,21 +123,25 @@ export default function ProductAdd() {
                             type="text"
                             value={product.ProductName}
                             onChange={(e) => setProduct({ ...product, ProductName: e.target.value })}
+                            placeholder="Nhập tên sản phẩm"
+                            variant="outline"
                         />
                     </FormControl>
-    
-                    {/* Price */}
+
+                    {/* Giá */}
                     <FormControl>
-                        <FormLabel htmlFor="price">Price</FormLabel>
+                        <FormLabel htmlFor="price">Giá</FormLabel>
                         <Input
                             id="price"
                             type="text"
                             value={product.Price}
                             onChange={(e) => setProduct({ ...product, Price: e.target.value })}
+                            placeholder="Nhập giá sản phẩm"
+                            variant="outline"
                         />
                     </FormControl>
-    
-                    {/* Stock Quantity */}
+
+                    {/* Số Lượng Kho */}
                     <FormControl>
                         <FormLabel htmlFor="stockQuantity">Số Lượng Kho</FormLabel>
                         <Input
@@ -148,77 +149,87 @@ export default function ProductAdd() {
                             type="text"
                             value={product.StockQuantity}
                             onChange={(e) => setProduct({ ...product, StockQuantity: e.target.value })}
+                            placeholder="Nhập số lượng kho"
+                            variant="outline"
                         />
                     </FormControl>
-    
-                    {/* Category ID */}
+
+                    {/* ID Danh Mục */}
                     <FormControl>
                         <FormLabel htmlFor="categoryId">ID Danh Mục</FormLabel>
                         <Select
                             id="categoryId"
                             value={product.CategoryID}
                             onChange={(e) => setProduct({ ...product, CategoryID: e.target.value })}
+                            placeholder="Chọn danh mục"
+                            variant="outline"
                         >
-                            <option value="">Select a category</option>
                             {OptionCategory.map((category) => (
                                 <option key={category.CategoryID} value={category.CategoryID}>
-                                    {category.CategoryName} {/* Display category name */}
+                                    {category.CategoryName}
                                 </option>
                             ))}
                         </Select>
                     </FormControl>
-    
-                    {/* Status */}
+
+                    {/* Trạng Thái */}
                     <FormControl>
                         <FormLabel htmlFor="status">Trạng Thái</FormLabel>
                         <Select
                             id="status"
                             value={product.status}
                             onChange={(e) => setProduct({ ...product, status: e.target.value })}
+                            placeholder="Chọn trạng thái"
+                            variant="outline"
                         >
-                            <option value="">Select a status</option>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                            <option value="pending">Pending</option>
+                            <option value="active">Hoạt động</option>
+                            <option value="inactive">Ngừng hoạt động</option>
+                            <option value="pending">Đang chờ</option>
                         </Select>
                     </FormControl>
-    
-                    {/* Main Image */}
-                  
-    
-                    {/* Other Images */}
+
+                    {/* Hình Phụ */}
                     <FormControl>
-                        <FormLabel htmlFor="otherImages">Hình Phụ (up to 5)</FormLabel>
+                        <FormLabel htmlFor="otherImages">Hình Phụ (tối đa 5)</FormLabel>
                         <Input
                             id="otherImages"
                             type="file"
                             accept="image/*"
                             multiple
                             onChange={handleOtherImagesChange}
+                            variant="outline"
                         />
                     </FormControl>
-    
-                    {/* Product Description */}
+
+                    {/* Mô Tả Sản Phẩm */}
                     <FormControl>
-                        <FormLabel htmlFor="description">Description</FormLabel>
+                        <FormLabel htmlFor="description">Mô Tả</FormLabel>
                         <ReactQuill
                             value={product.Description}
                             onChange={(value) => setProduct({ ...product, Description: value })}
+                            placeholder="Nhập mô tả sản phẩm"
                         />
                     </FormControl>
-    
-                    {/* Short Description */}
+
+                    {/* Mô Tả Ngắn */}
                     <FormControl>
-                        <FormLabel htmlFor="shortDescription">Short Description</FormLabel>
+                        <FormLabel htmlFor="shortDescription">Mô Tả Ngắn</FormLabel>
                         <ReactQuill
                             value={product.ShortDescription}
                             onChange={(value) => setProduct({ ...product, ShortDescription: value })}
+                            placeholder="Nhập mô tả ngắn"
                         />
                     </FormControl>
-    
                 </Grid>
-    
-                <Button type="submit" colorScheme="blue" style={{ marginTop: '70px' }}>
+
+                <Button 
+                    type="submit" 
+                    colorScheme="blue" 
+                    mt={8} 
+                    width="100%"
+                    borderRadius="md" // Hình vuông với góc bo nhẹ
+
+                >
                     Thêm Sản Phẩm
                 </Button>
             </form>

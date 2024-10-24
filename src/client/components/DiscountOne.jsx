@@ -9,7 +9,7 @@ const DiscountOne = () => {
     <div className="col-xl-6">
         <div className="discount-item rounded-16 overflow-hidden position-relative z-1" style={{ height: '300px' }}>
             <img
-                src="https://cdn2.cellphones.com.vn/insecure/rs:fill:690:300/q:90/plain/https://dashboard.cellphones.com.vn/storage/apple-chinh-hang-home.jpg"
+                src="https://namvietluat.vn/wp-content/uploads/2024/09/Co-nen-mo-cua-hang-kinh-doanh-thuc-pham-sach.jpg"
                 alt=""
                 className="position-absolute inset-block-start-0 inset-inline-start-0 w-100 h-100 z-n1"
                 style={{ imageRendering: 'crisp-edges' }}  // Thêm thuộc tính này để hình ảnh sắc nét hơn
@@ -19,7 +19,7 @@ const DiscountOne = () => {
     <div className="col-xl-6">
         <div className="discount-item rounded-16 overflow-hidden position-relative z-1" style={{ height: '300px' }}>
             <img
-                src="https://cdn2.cellphones.com.vn/insecure/rs:fill:690:300/q:90/plain/https://dashboard.cellphones.com.vn/storage/xiaomi.png"
+                src="https://thumb.danhsachcuahang.com/image/2020/10/20201010_19da4831efb6b23c43e56168cba646b3_1602315241.jpg"
                 alt=""
                 className="position-absolute inset-block-start-0 inset-inline-start-0 w-100 h-100 z-n1"
                 style={{ imageRendering: 'crisp-edges' }}  // Thêm thuộc tính này để hình ảnh sắc nét hơn

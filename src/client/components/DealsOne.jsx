@@ -32,12 +32,12 @@ const SamplePrevArrow = memo(function SamplePrevArrow(props) {
 
 const DealsOne = () => {
     const [timeLeft, setTimeLeft] = useState(getCountdown());
-    const [dataproductnew,setdataproductnew] = useState([]);
+    const [dataproductnew, setdataproductnew] = useState([]);
     const dataProductNew = async () => {
         try {
             const data = await ProductController.getProductNew();
             console.log(data.data)
-             setdataproductnew(data.data);
+            setdataproductnew(data.data);
         } catch (error) {
             console.error("Failed to fetch products:", error);
             // Có thể set một trạng thái lỗi hoặc thông báo cho người dùng biết về sự cố
@@ -45,10 +45,10 @@ const DealsOne = () => {
     };
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('vi-VN', {
-          style: 'currency',
-          currency: 'VND'
+            style: 'currency',
+            currency: 'VND'
         }).format(amount);
-      };
+    };
     useEffect(() => {
         dataProductNew();
         // console.log("GIÁ TRỊ"+dataproductnew.)
@@ -119,92 +119,80 @@ const DealsOne = () => {
                             </div>
                         </div>
                     </div>
-        
-
                     <div className="deals-week-slider arrow-style-two">
                         <Slider {...settings}>
-                           
-                        {dataproductnew.map((product) => (
-
-                            <div  key={product.ProductID} >
-                                
-                                <div className="product-card h-100 p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                                <Link
-                        to={`/product-details?id=${product.ProductID}`}
-                        className="product-card__thumb flex-center rounded-8 bg-gray-50 position-relative"
-                    >
-                                        <span className="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white position-absolute inset-inline-start-0 inset-block-start-0">
-                                            New%{" "}
-                                        </span>
-                                        <img
-                            src={`http://localhost:3000/uploads/${product.OtherImages[0]}`} // Cập nhật với URL ảnh đúng của sản phẩm
-                            alt={product.ProductName}
-                            className="w-auto max-w-unset"
-                        />
-                                    </Link>
-                                    <div className="product-card__content mt-16">
-                                        {/* <div className="flex-align gap-6">
-                                            <span className="text-xs fw-medium text-gray-500">4.8</span>
-                                            <span className="text-15 fw-medium text-warning-600 d-flex">
-                                                <i className="ph-fill ph-star" />
+                            {dataproductnew.map((product) => (
+                                <div key={product.ProductID} >
+                                    <div className="product-card h-100 p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
+                                        <Link
+                                            to={`/product-details?id=${product.ProductID}`}
+                                            className="product-card__thumb flex-center rounded-8 bg-gray-50 position-relative"
+                                        >
+                                            <span className="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white position-absolute inset-inline-start-0 inset-block-start-0">
+                                                New%{" "}
                                             </span>
-                                            <span className="text-xs fw-medium text-gray-500">(17k)</span>
-                                        </div> */}
-                                        <h6 className="title text-lg fw-semibold mt-12 mb-8">
+                                            <img
+                                                src={product.OtherImages[0]} // Cập nhật với URL ảnh đúng của sản phẩm
+                                                alt={product.ProductName}
+                                                className="w-auto max-w-unset"
+                                            />
+                                        </Link>
+                                        <div className="product-card__content mt-16">
+                                            <h6 className="title text-lg fw-semibold mt-12 mb-8">
+                                                <Link
+                                                    to={`/product-details?id=${product.ProductID}`}
+                                                    className="link text-line-2"
+                                                    tabIndex={0}
+                                                >
+                                                    {product.ProductName}                                            </Link>
+                                            </h6>
+                                            <div className="flex-align gap-4">
+                                                <span className="text-tertiary-600 text-md d-flex">
+                                                    <i className="ph-fill ph-storefront" />
+                                                </span>
+                                                <span className="text-gray-500 text-xs">
+                                                    By Admin
+                                                </span>
+                                            </div>
+                                            <div className="mt-8">
+                                                <div
+                                                    className="progress w-100 bg-color-three rounded-pill h-4"
+                                                    role="progressbar"
+                                                    aria-label="Basic example"
+                                                    aria-valuenow={35}
+                                                    aria-valuemin={0}
+                                                    aria-valuemax={100}
+                                                >
+                                                    <div
+                                                        className="progress-bar bg-tertiary-600 rounded-pill"
+                                                        style={{ width: "35%" }}
+                                                    />
+                                                </div>
+                                                <span className="text-gray-900 text-xs fw-medium mt-8">
+                                                    Số Lượng {product.StockQuantity}
+                                                </span>
+                                            </div>
+                                            <div className="product-card__price my-20">
+                                                {/* <span className="text-gray-400 text-md fw-semibold text-decoration-line-through">
+        {product.Cost}                                            </span> */}
+                                                {/* <span className="text-heading text-md fw-semibold "> */}
+                                                <h6 className=" mb-0">{formatCurrency(product.Price)}</h6>
+                                                {/* <span className="text-gray-500 fw-normal">/VND</span>{" "} */}
+                                            </div>
+
                                             <Link
-                        to={`/product-details?id=${product.ProductID}`}
-                        className="link text-line-2"
+                                                to="/cart"
+                                                className="product-card__cart btn bg-gray-50 text-heading hover-bg-main-600 hover-text-white py-11 px-24 rounded-8 flex-center gap-8 fw-medium"
                                                 tabIndex={0}
                                             >
-{product.ProductName}                                            </Link>
-                                        </h6>
-                                        <div className="flex-align gap-4">
-                                            <span className="text-tertiary-600 text-md d-flex">
-                                                <i className="ph-fill ph-storefront" />
-                                            </span>
-                                            <span className="text-gray-500 text-xs">
-                                                By Admin
-                                            </span>
+                                                Mua Sản Phẩm <i className="ph ph-shopping-cart" />
+                                            </Link>
                                         </div>
-                                        <div className="mt-8">
-                                            <div
-                                                className="progress w-100 bg-color-three rounded-pill h-4"
-                                                role="progressbar"
-                                                aria-label="Basic example"
-                                                aria-valuenow={35}
-                                                aria-valuemin={0}
-                                                aria-valuemax={100}
-                                            >
-                                                <div
-                                                    className="progress-bar bg-tertiary-600 rounded-pill"
-                                                    style={{ width: "35%" }}
-                                                />
-                                            </div>
-                                            <span className="text-gray-900 text-xs fw-medium mt-8">
-                                                Số Lượng {product.StockQuantity}
-                                            </span>
-                                        </div>
-                                        <div className="product-card__price my-20">
-    {/* <span className="text-gray-400 text-md fw-semibold text-decoration-line-through">
-        {product.Cost}                                            </span> */}
-    {/* <span className="text-heading text-md fw-semibold "> */}
-    <h6 className=" mb-0">{formatCurrency(product.Price)}</h6>
-    {/* <span className="text-gray-500 fw-normal">/VND</span>{" "} */}
-</div>
-
-                                        <Link
-                                            to="/cart"
-                                            className="product-card__cart btn bg-gray-50 text-heading hover-bg-main-600 hover-text-white py-11 px-24 rounded-8 flex-center gap-8 fw-medium"
-                                            tabIndex={0}
-                                        >
-                                            Mua Sản Phẩm <i className="ph ph-shopping-cart" />
-                                        </Link>
                                     </div>
                                 </div>
-                            </div>
-                                       ))}
+                            ))}
 
-                       
+
                         </Slider>
                     </div>
                 </div>

@@ -7,6 +7,7 @@ import {
     Button,
     Card,
     FormControl,
+    Badge,
     FormLabel,
     Grid,
     Input,
@@ -54,7 +55,7 @@ export default function VoucherManagement() {
         quantityused: 0,
         VoucherID: ''
     });
-    
+
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -125,10 +126,10 @@ export default function VoucherManagement() {
             if (result.isConfirmed) {
                 // Nếu người dùng nhấn "OK", thực hiện hành động xóa
                 try {
-                    const response:any = await VoucherService.deleteVoucherByID(id); // Giả sử hàm deleteVoucher thực hiện xóa
+                    const response: any = await VoucherService.deleteVoucherByID(id); // Giả sử hàm deleteVoucher thực hiện xóa
                     console.log(response)
 
-                    if (response.status===true) {
+                    if (response.status === true) {
                         Swal.fire(
                             'Đã Xóa!',
                             'Voucher đã được xóa thành công.',
@@ -147,7 +148,7 @@ export default function VoucherManagement() {
             }
         });
     };
-    const updatevoucher = async (id:string)=>{
+    const updatevoucher = async (id: string) => {
         navigate(`/admin/voucher-update?id=${id}`);
 
     };
@@ -155,7 +156,7 @@ export default function VoucherManagement() {
         const newVoucherData: Voucher = {
             ...newVoucher,
             MinimumPurchaseAmount: parseFloat(newVoucher.MinimumPurchaseAmount.toString()),
-            usableQuantity: parseInt(newVoucher.usableQuantity.toString(), 10),
+            usablequantity: parseInt(newVoucher.usablequantity.toString(), 10),
             percent: parseFloat(newVoucher.percent.toString()),
         };
 
@@ -164,7 +165,7 @@ export default function VoucherManagement() {
 
             if (response) {
                 // If successfully added, update the vouchers state
-               
+
                 Swal.fire({
                     title: 'Thêm Thành Công',
                     text: 'Thêm Thành Công.',
@@ -194,16 +195,22 @@ export default function VoucherManagement() {
         }
     };
 
-
+    const formatCurrency = (value: number) => {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        }).format(value);
+    };
     return (
         <Box pt={{ base: "20px", md: "80px", xl: "80px" }}>
             <Card p={5} mb={{ base: "0px", lg: "40px" }}>
                 <div className="card-header">
-                    <Text fontSize="xl" fontWeight="bold">DANH SÁCH VOUCHER</Text>
                     <Button
                         onClick={onOpen} // Open modal on click
                         colorScheme="blue"
                         size="sm"
+                        borderRadius="md"
+
                     >
                         <i className="ri-add-line fw-semibold align-middle"></i> Thêm voucher mới
                     </Button>
@@ -297,8 +304,8 @@ export default function VoucherManagement() {
                                 <FormControl>
                                     <FormLabel>Số lượng có thể dùng</FormLabel>
                                     <Input
-                                        name="usableQuantity"
-                                        value={newVoucher.usableQuantity}
+                                        name="usablequantity"
+                                        value={newVoucher.usablequantity}
                                         onChange={handleInputChange}
                                         type="number"
                                         placeholder="Nhập số lượng có thể dùng"
@@ -339,45 +346,78 @@ export default function VoucherManagement() {
                     <Table variant="simple" mt={6}>
                         <Thead>
                             <Tr>
-                            <Th style={{ backgroundColor: tableBg, color: 'black' }}>Mã Voucher</Th>
-<Th style={{ backgroundColor: tableBg, color: 'black' }}>Ngày hết hạn</Th>
-<Th style={{ backgroundColor: tableBg, color: 'black' }}>Số tiền mua tối thiểu</Th>
-<Th style={{ backgroundColor: tableBg, color: 'black' }}>Số lượng đã sử dụng</Th>
-<Th style={{ backgroundColor: tableBg, color: 'black' }}>Số lượng có thể dùng</Th>
-<Th style={{ backgroundColor: tableBg, color: 'black' }}>Trạng thái</Th>
-<Th style={{ backgroundColor: tableBg, color: 'black' }}>Hành Động</Th>
+                                <Th style={{ backgroundColor: tableBg, color: 'black' }}>Mã Voucher</Th>
+                                <Th style={{ backgroundColor: tableBg, color: 'black' }}>Ngày hết hạn</Th>
+                                <Th style={{ backgroundColor: tableBg, color: 'black' }}>Số tiền mua tối thiểu</Th>
+                                <Th style={{ backgroundColor: tableBg, color: 'black' }}>Số lượng đã sử dụng</Th>
+                                <Th style={{ backgroundColor: tableBg, color: 'black' }}>Số lượng có thể dùng</Th>
+                                <Th style={{ backgroundColor: tableBg, color: 'black' }}>Trạng thái</Th>
+                                <Th style={{ backgroundColor: tableBg, color: 'black' }}>Hành Động</Th>
 
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {showdata.map((voucher) => (
-                                <Tr >
-                                    <Td>{voucher.Code}</Td>
-                                    <Td>{voucher.ExpiryDate}</Td>
-                                    <Td>{voucher.MinimumPurchaseAmount} VNĐ</Td>
-                                    <Td>{voucher.quantityused} </Td>
-                                    <Td>{voucher.usableQuantity}</Td>
-                                    <Td>{voucher.status === 'active' ? 'Kích hoạt' : 'Ngừng hoạt động'}</Td>
-                                    <Td>
-                                    <Button
-    colorScheme="blue"
-    size="sm"
-    mr={2}
-    onClick={() => updatevoucher(String(voucher.VoucherID))} // Chuyển đổi sang chuỗi
->
-    Edit
-</Button>
+  {showdata.map((voucher) => (
+    <Tr key={voucher.VoucherID} _hover={{ bg: "gray.50" }}>
+      <Td>
+        <Badge colorScheme="blue">{voucher.Code}</Badge>
+      </Td>
 
-                                        <Button colorScheme="green" size="sm"
-                                            onClick={() => deletevoucher(String(voucher.VoucherID))} // Chuyển đổi sang chuỗi
+      <Td>
+        <Badge colorScheme="purple">
+          {new Date(voucher.ExpiryDate).toLocaleString('vi-VN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          })}
+        </Badge>
+      </Td>
 
-                                        >
-                                            Sửa
-                                        </Button>
-                                    </Td>
-                                </Tr>
-                            ))}
-                        </Tbody>
+      <Td>
+        <Badge colorScheme="green">{formatCurrency(voucher.MinimumPurchaseAmount)} VNĐ</Badge>
+      </Td>
+      
+      <Td>
+        <Badge colorScheme="orange">{voucher.quantityused}</Badge>
+      </Td>
+      
+      <Td>
+        <Badge colorScheme="teal">{voucher.usablequantity}</Badge>
+      </Td>
+      
+      <Td>
+        <Badge colorScheme={voucher.status === 'active' ? 'green' : 'red'}>
+          {voucher.status === 'active' ? 'Kích hoạt' : 'Ngừng hoạt động'}
+        </Badge>
+      </Td>
+      
+      <Td>
+        <Button
+          colorScheme="blue"
+          size="sm"
+          borderRadius="md"
+          mr={2}
+          onClick={() => updatevoucher(String(voucher.VoucherID))} // Convert to string
+        >
+          Edit
+        </Button>
+
+        <Button 
+          colorScheme="green" 
+          size="sm"
+          borderRadius="md"
+          onClick={() => deletevoucher(String(voucher.VoucherID))} // Convert to string
+        >
+          Sửa
+        </Button>
+      </Td>
+    </Tr>
+  ))}
+</Tbody>
+
                     </Table>
                 </Box>
 

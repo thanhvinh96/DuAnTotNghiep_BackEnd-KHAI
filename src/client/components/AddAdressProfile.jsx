@@ -265,7 +265,7 @@ const handleUpdateClick = async (id) => {
           <p>Địa Chỉ Nhận Hàng</p>
           <button
             onClick={() => setIsFormVisible(!isFormVisible)}
-            style={{ color: 'white' }}
+            style={{ color: 'white' ,backgroundColor:'green' }}
           >
             {isFormVisible ? 'Hủy' : 'Thêm địa chỉ'}
           </button>
@@ -401,11 +401,11 @@ const handleUpdateClick = async (id) => {
     <table className="table table-bordered" >
     <thead>
     <tr style={{ color: 'white' }}>
-    <th style={{ padding: '20px',color: 'white' }}>Họ và Tên</th>
-    <th style={{ padding: '20px',color: 'white' }}>Địa chỉ</th>
-    <th style={{ padding: '20px',color: 'white' }}>Số điện thoại</th>
-    <th style={{ padding: '20px',color: 'white' }}>Loại địa chỉ</th>
-    <th style={{ padding: '20px',color: 'white' }}>Hành Động</th>
+    <th style={{ padding: '20px',color: 'white',backgroundColor:'green' }}>Họ và Tên</th>
+    <th style={{ padding: '20px',color: 'white',backgroundColor:'green' }}>Địa chỉ</th>
+    <th style={{ padding: '20px',color: 'white',backgroundColor:'green' }}>Số điện thoại</th>
+    <th style={{ padding: '20px',color: 'white',backgroundColor:'green' }}>Loại địa chỉ</th>
+    <th style={{ padding: '20px',color: 'white',backgroundColor:'green' }}>Hành Động</th>
   </tr>
   
               </thead>

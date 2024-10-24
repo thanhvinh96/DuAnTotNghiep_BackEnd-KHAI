@@ -8,10 +8,10 @@ import BottomFooter from "../components/BottomFooter";
 import CartSection from "../components/CartSection";
 import ShippingOne from "../components/ShippingOne";
 import ScrollToTop from "react-scroll-to-top";
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { VoucherService } from '../../services/VoucherService.ts';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeFromProduct, updateProductQuantity, updateTotalPrices } from '../../redux/acction/cartActions.ts'; // Đảm bảo đường dẫn đúng
+import { removeFromProduct, updateProductQuantity, updateTotalPrices, clearCart } from '../../redux/acction/cartActions.ts'; // Đảm bảo đường dẫn đúng
 import Swal from 'sweetalert2'; // Nhập SweetAlert2
 import { Modal, Button } from 'react-bootstrap';  // Import các component từ Bootstrap
 import { jwtDecode } from 'jwt-decode';
@@ -21,16 +21,13 @@ import QuantityControl from '../helper/QuantityControl'
 
 const CartPage = () => {
   const tokenUser = localStorage.getItem('tokenUser');
-  
-
-  useEffect(()=>{
-    if(tokenUser){
-  const decodedToken = jwtDecode(tokenUser); // Giải mã token
-  console.log('giá trị id ' + decodedToken.userId)
+  useEffect(() => {
+    if (tokenUser) {
+      const decodedToken = jwtDecode(tokenUser); // Giải mã token
+      console.log('giá trị id ' + decodedToken.userId)
     }
   })
   const [addresses, setaddresses] = useState([]);  // Khởi tạo là mảng rỗng
-
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.items); // Lấy danh sách sản phẩm trong giỏ hàng
   const [quantities, setQuantities] = useState({}); // State để lưu trữ số lượng cho từng sản phẩm
@@ -38,35 +35,34 @@ const CartPage = () => {
 
   useEffect(() => {
     const showData = async () => {
-        const tokenUser = localStorage.getItem('tokenUser'); // Lấy token từ localStorage
+      const tokenUser = localStorage.getItem('tokenUser'); // Lấy token từ localStorage
+      // Kiểm tra tokenUser trước khi giải mã
+      if (!tokenUser || typeof tokenUser !== 'string' || tokenUser.trim() === '') {
+        console.error('Invalid token:', tokenUser);
+        return; // Kết thúc hàm nếu token không hợp lệ
+      }
+      try {
+        const decodedToken = jwtDecode(tokenUser); // Giải mã token
+        console.log('giá trị id ' + decodedToken.userId); // Hiển thị userId từ token
 
-        // Kiểm tra tokenUser trước khi giải mã
-        if (!tokenUser || typeof tokenUser !== 'string' || tokenUser.trim() === '') {
-            console.error('Invalid token:', tokenUser);
-            return; // Kết thúc hàm nếu token không hợp lệ
-        }
+        // Gọi API để lấy địa chỉ bằng userId
+        const res = await AddressController.getAlladdressById(decodedToken.userId);
+        setaddresses(res); // Cập nhật state địa chỉ
+        console.log("giá trị adress")
+        console.log(res); // Hiển thị dữ liệu địa chỉ
 
-        try {
-            const decodedToken = jwtDecode(tokenUser); // Giải mã token
-            console.log('giá trị id ' + decodedToken.userId); // Hiển thị userId từ token
 
-            // Gọi API để lấy địa chỉ bằng userId
-            const res = await AddressController.getAlladdressById(decodedToken.userId);
-            setaddresses(res); // Cập nhật state địa chỉ
-            console.log(res); // Hiển thị dữ liệu địa chỉ
-
-        } catch (error) {
-            console.error('Error decoding token or fetching addresses:', error);
-        }
+      } catch (error) {
+        console.error('Error decoding token or fetching addresses:', error);
+      }
     };
 
     showData();
-}, []); // Không cần thêm tokenUser vào dependency array nếu bạn luôn lấy nó từ localStorage
+  }, []); // Không cần thêm tokenUser vào dependency array nếu bạn luôn lấy nó từ localStorage
 
   const handleUpdateData = () => {
     setLoading(true); // Đặt trạng thái loading là true
     // Tại đây, bạn có thể thêm logic để cập nhật dữ liệu (gọi API hoặc xử lý dữ liệu)
-
     // Sau khi cập nhật xong dữ liệu, có thể tải lại trang
     // Ví dụ: window.location.reload() nếu bạn muốn tải lại toàn bộ trang
     setTimeout(() => { // Giả lập một khoảng thời gian tải
@@ -139,14 +135,10 @@ const CartPage = () => {
       });
     }
   };
-
-
-
   const handleRemoveToCart = (id) => {
     console.log(id);
     dispatch(removeFromProduct(id)); // Gửi action để xóa sản phẩm khỏi giỏ hàng
   };
-
   useEffect(() => {
     // Khởi tạo quantities với số lượng sản phẩm từ cartItems
     const initialQuantities = {};
@@ -166,6 +158,7 @@ const CartPage = () => {
         [id]: newQuantity,
       };
     });
+    window.location.reload(); // Corrected
   };
 
   const decrementQuantity = (id) => {
@@ -177,6 +170,7 @@ const CartPage = () => {
         [id]: newQuantity,
       };
     });
+    window.location.reload(); // Corrected
   };
 
   const formatCurrency = (amount) => {
@@ -196,21 +190,54 @@ const CartPage = () => {
     console.log(dataorder);
 
   }
+  const [paymentMethod, setPaymentMethod] = useState('cod'); // Giá trị mặc định
+  const [bankAccounts, setBankAccounts] = useState([]); // Trạng thái để lưu danh sách tài khoản ngân hàng
+  const [dataship, setDataship] = useState({
+    PaymentType: '', // Initialize PaymentType with an empty string
+  });
+  const handlePaymentMethodChange = (event) => {
+    const { value } = event.target;
+    console.log(value)
+    setPaymentMethod(value);
+    setDataship((prevDataship) => ({
+      ...prevDataship, // Safely copy the previous state
+      PaymentType: value, // Update the PaymentType
+    }));
+    // Call API to fetch bank accounts if the selected method is 'online'
+    if (value === 'online') {
+      fetchBankAccounts();
+    }
+  };
+
+  const fetchBankAccounts = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/bank');
+      if (!response.ok) {
+        throw new Error('Failed to fetch bank accounts');
+      }
+      const data = await response.json();
+      console.log("giá trị bank" + data)
+      setBankAccounts(data);
+    } catch (error) {
+      console.error('Error fetching bank accounts:', error);
+    }
+  };
   const [selectedAddress, setSelectedAddress] = useState({
     name: '',
     phone: '',
     addressType: '',
     address: '',
-    id_address: ''
+    id_address: '',
+    PaymentType: '',
   });
 
   const handlePlaceOrder = async () => {
-    if(tokenUser){
+    if (tokenUser) {
       const decodedToken = jwtDecode(tokenUser); // Giải mã token
       const orderDetails = {
         cartItems: cartItems.map(item => ({
           ProductID: item.ProductID,
-  
+
           ProductName: item.ProductName,
           Price: item.Price,
           Quantity: quantities[item.ProductID],
@@ -225,21 +252,26 @@ const CartPage = () => {
         addresstype: selectedAddress['addressType'],
         recipientPhone: selectedAddress['phone'],
         recipientName: selectedAddress['name'],
+        PaymentType: dataship['PaymentType'],
       };
-  
+
       try {
         console.log(orderDetails);
         // Call your API to place the order (Assuming OrderService.createOrder is implemented)
+
         const response = await OrderService.createOrder(orderDetails);
         if (response.status === true) {
-          Swal.fire({
-            title: 'Đặt hàng thành công!',
-            text: `Mã đơn hàng: ${response.orderId}`,
-            icon: 'success',
-            confirmButtonText: 'OK',
-          });
+            dispatch(clearCart()); // Dispatch hành động xóa giỏ hàng
+            Swal.fire({
+                title: 'Đặt hàng thành công!',
+                text: `Mã đơn hàng: ${response.orderId}`,
+                icon: 'success',
+                confirmButtonText: 'OK',
+            }).then(() => {
+                navigate('/'); // Chuyển hướng đến trang chủ sau khi đặt hàng thành công
+            });
         } else {
-          throw new Error('Đặt hàng thất bại!');
+            throw new Error('Đặt hàng thất bại!');
         }
       } catch (error) {
         Swal.fire({
@@ -249,7 +281,7 @@ const CartPage = () => {
           confirmButtonText: 'OK',
         });
       }
-    }else{
+    } else {
       Swal.fire({
         title: 'Lỗi khi đặt hàng',
         text: 'Vui Lòng Đăng Nhập.',
@@ -257,7 +289,7 @@ const CartPage = () => {
         confirmButtonText: 'OK',
       });
     }
-  
+
   };
 
 
@@ -283,6 +315,30 @@ const CartPage = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);  // Đóng modal khi nhấn "Đóng"
   };
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/profile'); // Navigate to the /profile page
+  };
+  const [bankData, setBankData] = useState([]);
+
+  const fetchBankData = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/bank');
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+      const data = await response.json(); // Chuyển đổi phản hồi thành JSON
+      setBankData(data); // Lưu dữ liệu vào state
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setLoading(false); // Cập nhật trạng thái loading
+    }
+  };
+  useEffect(() => {
+    fetchBankData();
+  }, [])
 
   return (
     <>
@@ -332,7 +388,7 @@ const CartPage = () => {
 
                       <div className="address-default">Mặc định</div>
                     </div>
-                    <Button className="change-btn" onClick={() => setIsModalOpen(true)}>Thay đổi</Button>
+                    <Button className="change-btn" style={{backgroundColor:'green'}} onClick={() => setIsModalOpen(true)}>Thay đổi</Button>
                   </div>
                 </div>
 
@@ -342,6 +398,8 @@ const CartPage = () => {
                     <p className="payment-titles">Địa chỉ nhận hàng</p>
                   </Modal.Header>
                   <Modal.Body>
+                    <Button className="change-btn" onClick={handleClick}>Thêm Địa Chỉ Mới</Button>
+
                     <ul className="list-group">
                       {Array.isArray(addresses) && addresses.map((address, index) => (
                         <li key={index} className="list-group-item" style={{ marginBottom: '20px' }}>
@@ -377,11 +435,11 @@ const CartPage = () => {
                   <table className="table style-three" >
                     <thead style={{ padding: '100px' }}>
                       <tr>
-                        <th className="h6 mb-0 text-lg fw-bold" style={{ padding: '20px', color: 'white' }}>Hành Động</th>
-                        <th className="h6 mb-0 text-lg fw-bold" style={{ padding: '20px', color: 'white' }}>Tên Sản Phẩm</th>
-                        <th className="h6 mb-0 text-lg fw-bold" style={{ padding: '20px', color: 'white' }}>Giá Sản Phẩm</th>
-                        <th className="h6 mb-0 text-lg fw-bold" style={{ padding: '20px', color: 'white' }}>Số Lượng</th>
-                        <th className="h6 mb-0 text-lg fw-bold" style={{ padding: '20px', color: 'white' }}>Tổng Tiền</th>
+                        <th className="h6 mb-0 text-lg fw-bold" style={{ padding: '20px', color: 'white',backgroundColor:'green' }}>Hành Động</th>
+                        <th className="h6 mb-0 text-lg fw-bold" style={{ padding: '20px', color: 'white',backgroundColor:'green' }}>Tên Sản Phẩm</th>
+                        <th className="h6 mb-0 text-lg fw-bold" style={{ padding: '20px', color: 'white',backgroundColor:'green' }}>Giá Sản Phẩm</th>
+                        <th className="h6 mb-0 text-lg fw-bold" style={{ padding: '20px', color: 'white',backgroundColor:'green' }}>Số Lượng</th>
+                        <th className="h6 mb-0 text-lg fw-bold" style={{ padding: '20px', color: 'white',backgroundColor:'green' }}>Thành Tiền</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -390,6 +448,7 @@ const CartPage = () => {
                           <td style={{ padding: '20px' }}>
                             <button
                               type="button"
+                              style={{backgroundColor:'green'}}
                               className="remove-tr-btn flex-align gap-12 hover-text-danger-600"
                               // Thêm hàm xóa sản phẩm nếu cần
                               onClick={() => { handleRemoveToCart(item.ProductID) }}
@@ -405,7 +464,7 @@ const CartPage = () => {
                                 className="table-product__thumb border border-gray-100 rounded-8 flex-center"
                               >
                                 <img
-                                  src={`http://localhost:3000/uploads/${item.OtherImages[0] || 'default-image.png'}`}
+                                  src={item.OtherImages[0]}
                                   alt={item.ProductName}
                                 />
                               </Link>
@@ -419,31 +478,7 @@ const CartPage = () => {
                                     {item.ProductName}
                                   </Link>
                                 </h6>
-                                {/* <div className="flex-align gap-16 mb-16">
-                                  <div className="flex-align gap-6">
-                                    <span className="text-md fw-medium text-warning-600 d-flex">
-                                      <i className="ph-fill ph-star" />
-                                    </span>
-                                    <span className="text-md fw-semibold text-gray-900">
-                                      4.8
-                                    </span>
-                                  </div>
-                                  <span className="text-sm fw-medium text-gray-200">|</span>
-                                  <span className="text-neutral-600 text-sm">128 Reviews</span>
-                                </div> */}
                                 <div className="flex-align gap-16">
-                                  {/* <Link
-                                    to="/cart"
-                                    className="product-card__cart btn bg-gray-50 text-heading text-sm hover-bg-main-600 hover-text-white py-7 px-8 rounded-8 flex-center gap-8 fw-medium"
-                                  >
-                                    Camera
-                                  </Link>
-                                  <Link
-                                    to="/cart"
-                                    className="product-card__cart btn bg-gray-50 text-heading text-sm hover-bg-main-600 hover-text-white py-7 px-8 rounded-8 flex-center gap-8 fw-medium"
-                                  >
-                                    Videos
-                                  </Link> */}
                                 </div>
                               </div>
                             </div>
@@ -499,7 +534,8 @@ const CartPage = () => {
                     />
                     <button
                       type="button"
-                      className="btn btn-main py-18 w-100 rounded-8"
+                      style={{backgroundColor:'green'}}
+                      className="btnpy-18 w-100 rounded-8"
                       onClick={handleApplyDiscount} // Gọi hàm khi nhấn nút "Áp Dụng"
                     >
                       Áp Dụng
@@ -523,24 +559,56 @@ const CartPage = () => {
                     <span class="text-gray-900 font-heading-two">Giá Sau Khi Áp Dụng</span>
                     <span class="text-gray-900 fw-semibold">
                       {formatCurrency(totalPriceAfterDiscount)}
-
                     </span>
                   </div>
                 </div>
-                <div class="bg-color-three rounded-8 p-24 mt-24">
-                  <div class="d-flex justify-content-between gap-8">
-                    <span class="text-gray-900 text-xl fw-semibold">Tổng Tiền</span>
-                    {
-                      totalPrice > totalPriceAfterDiscount ? (
-                        <span className="text-gray-900 text-xl fw-semibold">
-                          {formatCurrency(totalPrice)} → {formatCurrency(totalPriceAfterDiscount)}
-                        </span>
-                      ) : null
-                    }
+                <div className="mt-16">
+                  <span className="text-gray-900 text-lg fw-semibold">Chọn phương thức thanh toán:</span>
+                  <div className="d-flex gap-16 mt-8 payment-options">
+                    <label className={`payment-option ${paymentMethod === 'cod' ? 'selected' : ''}`}>
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="cod"
+                        checked={paymentMethod === 'cod'}
+                        onChange={handlePaymentMethodChange}
+                      />
+                      <span className="text-gray-900">Khi nhận hàng</span>
+                    </label>
+                    <label className={`payment-option ${paymentMethod === 'online' ? 'selected' : ''}`}>
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="online"
+                        checked={paymentMethod === 'online'}
+                        onChange={handlePaymentMethodChange}
+                      />
+                      <span className="text-gray-900">Thanh toán online</span>
+                    </label>
+                  </div>
+                  <div className="mt-16 text-gray-900">
+                    Bạn đã chọn phương thức thanh toán:
+                    <strong>
+                      {paymentMethod === 'cod' ?
+                        'Khi nhận hàng' :
+                        'Thanh toán online vui lòng chuyển tiền và liên hệ Admin để xác nhận đơn hàng'}
+                    </strong>
+                    {paymentMethod !== 'cod' && (
+                      <ul>
+                        {bankData.map(bank => (
+                          <li key={bank.id}>
+                            <strong>Tên ngân hàng: </strong>{bank.name}<br />
+                            <strong>Địa chỉ: </strong>{bank.address}<br />
+                            <strong>Số điện thoại: </strong>{bank.phone}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </div>
                 <button
-                  className="btn btn-main mt-40 py-18 w-100 rounded-8"
+                  style={{backgroundColor:'green'}}
+                  className="btn mt-40 py-18 w-100 rounded-8"
                   onClick={handlePlaceOrder}
                 >
                   Đặt Hàng

@@ -135,7 +135,7 @@ const DealsCategory = () => {
                                                     {category.CategoryName}
                                                     </span>
                                                     <img
-                                                        src={`http://localhost:3000/uploads/${product.OtherImages[0]}`} // Cập nhật với URL ảnh đúng của sản phẩm
+                                                        src={product.OtherImages[0]} // Cập nhật với URL ảnh đúng của sản phẩm
                                                         alt={product.ProductName}
                                                         className="w-auto max-w-unset"
                                                     />

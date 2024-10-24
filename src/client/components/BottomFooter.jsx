@@ -6,7 +6,7 @@ const BottomFooter = () => {
             <div className="container container-lg">
                 <div className="bottom-footer__inner flex-between flex-wrap gap-16 py-16">
                     <p className="bottom-footer__text ">
-                        Võ Phạm Gia Phong © 2024. All Rights Reserved{" "}
+                        ĐỖ MINH KHẢI © 2024. All Rights Reserved{" "}
                     </p>
                   
                 </div>

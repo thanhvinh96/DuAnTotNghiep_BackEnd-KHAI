@@ -8,6 +8,8 @@ import {
   Tbody,
   Tr,
   Th,
+  Card,
+  Badge,
   Td,
   Button,
   useColorModeValue,
@@ -42,59 +44,98 @@ export default function OrderManagement() {
       (typeof order.ReviewDate === 'string' && order.ReviewDate.toLowerCase().includes(searchTerm.toLowerCase())) // Tìm kiếm theo thời gian
     );
   });
-
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    }).format(value);
+  };
   return (
-    <Box pt={{ base: "130px", md: "80px", xl: "80px" }} px={{ base: "20px", md: "40px" }}>
-      <SimpleGrid columns={1} gap='20px'>
-        <Box w="100%" bg={tableBg} borderRadius="lg" boxShadow="md" p="20px">
-          <Input
-            placeholder="Tìm kiếm đơn hàng..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            mb="20px"
-          />
-          <Box overflowX="auto">
-            <Table variant="simple">
-              <Thead>
-                <Tr>
-                  <Th color="black">Người Dùng</Th>
-                  <Th color="black">Nội Dung</Th>
-                  <Th color="black">Sản Phẩm</Th>
-                  <Th color="black">Thời Gian</Th>
-                  <Th color="black">Hành Động</Th> {/* Cột hành động */}
-                </Tr>
-              </Thead>
-              <Tbody>
-                {filteredOrders.map((order) => (
-                  <Tr key={order.OrderID}> {/* Sử dụng OrderID làm key */}
-                    <Td>{order.UserName}</Td> {/* Hiển thị tên người dùng */}
-                    <Td>{order.Comment}</Td> {/* Hiển thị nội dung */}
-                    <Td>
+    <Box
+    pt={{ base: "130px", md: "80px", xl: "80px" }}
+  >
+    <Card
+      p={8}
+      mb={{ base: "20px", lg: "40px" }}
+      borderRadius="lg"
+      boxShadow="lg"
+      bg="white"
+      style={{ width: '100%' }}
+    >
+      <Box w="100%" borderRadius="lg" boxShadow="md" p="20px">
+        <Input
+          placeholder="Tìm kiếm đơn hàng..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          mb="20px"
+          borderColor="gray.300"
+          focusBorderColor="teal.500"
+          borderRadius="md"
+          size="lg"
+        />
+  
+        <Box overflowX="auto">
+          <Table variant="striped" colorScheme="gray" size="md">
+            <Thead bg="gray.100">
+              <Tr>
+                <Th color="gray.700">Người Dùng</Th>
+                <Th color="gray.700">Nội Dung</Th>
+                <Th color="gray.700">Sản Phẩm</Th>
+                <Th color="gray.700">Thời Gian</Th>
+                <Th color="gray.700">Hành Động</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {filteredOrders.map((order) => (
+                <Tr key={order.OrderID} _hover={{ bg: "gray.50" }}>
+                  {/* <Td>{order.UserName}</Td>
+                  <Td>{order.Comment}</Td> */}
+                  <Td>
+                      <Badge colorScheme="orange">
+                        {order.UserName}
+                      </Badge></Td>                  <Td>
+                      <Badge colorScheme="blue">
+
+                        {order.Comment}
+                        </Badge></Td>
+                  <Td>
                     <Button
-                        as={RouterLink} // Use RouterLink for navigation
-                        to={`/product-details?id=${order.ProductID}`} // Route to the product detail page
-                        colorScheme="teal"        
+                      as={RouterLink}
+                      to={`/product-details?id=${order.ProductID}`}
+                      colorScheme="teal"
+                      size="sm"
+                      borderRadius="md"
                       >
-                        Xem sản phẩm
-                      </Button>
-                        </Td> {/* Hiển thị ID sản phẩm */}
-                    <Td>{order.ReviewDate}</Td> {/* Hiển thị thời gian */}
-                    <Td>
-                      <Button
-                        as={RouterLink}
-                        to={`/admin/order-detail?id=${order.OrderID}`} // Route to the detail page
-                        colorScheme="teal"        
-                      >
-                        Xem chi tiết
-                      </Button>
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </Box>
+                      Xem sản phẩm
+                    </Button>
+                  </Td>
+                  <Td>{new Date(order.ReviewDate).toLocaleString('vi-VN', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric', 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    hour12: false 
+})}</Td>                  <Td>
+                    <Button
+                      as={RouterLink}
+                      to={`/admin/order-detail?id=${order.OrderID}`}
+                      colorScheme="red"
+                      size="sm"
+                      borderRadius="md"
+
+                    >
+                      Xóa Bình Luận
+                    </Button>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
         </Box>
-      </SimpleGrid>
-    </Box>
+      </Box>
+    </Card>
+  </Box>
+  
   );
 }

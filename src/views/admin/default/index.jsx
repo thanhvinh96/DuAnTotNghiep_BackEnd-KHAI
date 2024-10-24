@@ -12,8 +12,10 @@ import {
   useColorModeValue,
   Icon,
   Select,
+  
+  Badge
 } from "@chakra-ui/react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, LabelList, ResponsiveContainer } from 'recharts';
 import { MdVerifiedUser, MdAttachMoney, MdAddShoppingCart } from "react-icons/md";
 import { Link as RouterLink } from "react-router-dom";
 import { OrderService } from '../../../services/OrderService.ts'; // Update the path if necessary
@@ -68,7 +70,10 @@ const UserReports = () => {
     style: 'currency',
     currency: 'VND',
 }).format(datacountusd); // Định dạng số theo tiền tệ Việt Nam
-
+const countOrderMonth = [
+  { type: 'Đơn Hàng', orders: 50 },
+  { type: 'Doanh Thu', revenue: 5000 },
+];
   const countUser = async () => {
       try {
           const res = await fetch('http://localhost:3000/api/user/get-count');
@@ -118,11 +123,17 @@ const UserReports = () => {
       countOrdersum();
   }, []);
   
-
+  const formatCurrency = () => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    }).format();
+  };
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3, "2xl": 3 }} gap='20px' mb='20px'>
-      <MiniStatistics
+        
+     <MiniStatistics
   startContent={
     <IconBox
       w='56px'
@@ -131,11 +142,13 @@ const UserReports = () => {
       icon={
         <Icon w='32px' h='32px' as={MdVerifiedUser} color={brandColor} />
       }
+      borderRadius="0" // Set borderRadius to 0 for a square shape
     />
   }
   name='Tổng Thành Viên'
   value={`${datacountUser}`}
 />
+
 
         <MiniStatistics
           startContent={
@@ -150,6 +163,8 @@ const UserReports = () => {
           }
           name='Đơn Hàng Chưa Xử Lý'
           value={`${datacountorder}`}
+          borderRadius="4px" // Adjust this value for more or less rounding
+
           />
         <MiniStatistics
           startContent={
@@ -164,12 +179,14 @@ const UserReports = () => {
           }
           name='Danh Thu'
           value={`${formattedValue}`}
+          borderRadius="4px" // Adjust this value for more or less rounding
+
           />
       </SimpleGrid>
 
       <Box pt={{}}>
         <SimpleGrid columns={1} gap='20px'>
-          <Box w="100%" bg={tableBg} borderRadius="lg" boxShadow="md" p="20px">
+          {/* <Box w="100%" bg={tableBg} borderRadius="lg" boxShadow="md" p="20px">
             <Input
               placeholder="Tìm kiếm..."
               value={searchTerm}
@@ -203,44 +220,107 @@ const UserReports = () => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {paginatedOrders.map((order) => (
-                    <Tr key={order.OrderID}>
-                      <Td>{order.codeorder}</Td>
-                      <Td>{order.UserID}</Td>
-                      <Td>{order.BuyerName}</Td>
-                      <Td>{order.OrderDate}</Td>
-                      <Td>{order.TotalAmount}</Td>
-                      <Td>{order.Status}</Td>
-                      <Td>{order.PaymentStatus}</Td>
-                      <Td>
-                        <Button
-                          as={RouterLink}
-                          to={`/admin/order-detail?id=${order.OrderID}`}
-                          colorScheme="teal"
-                        >
-                          Xem chi tiết
-                        </Button>
-                      </Td>
-                    </Tr>
-                  ))}
-                </Tbody>
+  {paginatedOrders.map((order) => (
+    <Tr key={order.OrderID}>
+      <Td>
+        <Badge colorScheme="blue">{order.codeorder}</Badge>
+      </Td>
+      
+      <Td>
+        <Badge colorScheme="gray">{order.UserID}</Badge>
+      </Td>
+
+      <Td>
+        <Badge colorScheme="teal">{order.BuyerName}</Badge>
+      </Td>
+
+      <Td>
+        <Badge colorScheme="purple">
+          {new Date(order.OrderDate).toLocaleString('vi-VN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          })}
+        </Badge>
+      </Td>
+
+      <Td>
+        <Badge colorScheme="green">{formatCurrency(order.TotalAmount)}</Badge>
+      </Td>
+
+      <Td>
+        <Badge colorScheme={order.Status === 'Completed' ? 'green' : 'red'}>
+          {order.Status}
+        </Badge>
+      </Td>
+
+      <Td>
+        <Badge colorScheme={order.PaymentStatus === 'Paid' ? 'green' : 'red'}>
+          {order.PaymentStatus}
+        </Badge>
+      </Td>
+
+      <Td>
+        <Button
+          as={RouterLink}
+          to={`/admin/order-detail?id=${order.OrderID}`}
+          colorScheme="blue"
+          borderRadius="md"
+        >
+          Xem chi tiết
+        </Button>
+      </Td>
+    </Tr>
+  ))}
+</Tbody>
+
               </Table>
             </Box>
-          </Box>
+          </Box> */}
 
           {/* Order and Revenue Chart */}
           <Box w="100%" bg="white" borderRadius="lg" boxShadow="md" p="20px">
-            <h2 style={{ fontSize: "24px", marginBottom: "20px" }}>Báo cáo Đơn Hàng và Doanh Thu</h2>
-            <BarChart width={1024} height={300} data={countOrdersums}>
-                <XAxis dataKey="month" /> {/* Sử dụng 'month' làm khóa cho XAxis */}
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <CartesianGrid strokeDasharray="3 3" />
-                <Bar dataKey="totalOrders" fill="#8884d8" name="Số Đơn Hàng" /> {/* Hiển thị tên cho Bar */}
-                <Bar dataKey="totalRevenue" fill="#82ca9d" name="Doanh Thu" /> {/* Hiển thị tên cho Bar */}
-            </BarChart>
-        </Box>
+      <h2 style={{ fontSize: "24px", marginBottom: "20px" }}>Báo cáo Đơn Hàng và Doanh Thu</h2>
+      
+      {/* Biểu đồ tổng hàng tháng */}
+      <h3 style={{ fontSize: "20px", marginBottom: "10px" }}>Tổng Đơn Hàng và Doanh Thu theo Tháng</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={countOrdersums}>
+          <XAxis dataKey="month" />
+          <YAxis width={80} tickFormatter={(value) => `${(value / 1000000).toFixed(0)}M`} />
+          <Tooltip />
+          <Legend />
+          <CartesianGrid strokeDasharray="3 3" />
+          <Bar dataKey="totalOrders" fill="#8884d8" name="Số Đơn Hàng" barSize={20}>
+            <LabelList dataKey="totalOrders" position="top" />
+          </Bar>
+          <Bar dataKey="totalRevenue" fill="#82ca9d" name="Doanh Thu" barSize={20}>
+            <LabelList dataKey="totalRevenue" position="top" />
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+
+      {/* Biểu đồ đơn hàng và doanh thu cho tháng cụ thể */}
+      {/* <h3 style={{ fontSize: "20px", margin: "20px 0 10px" }}>Đơn Hàng và Doanh Thu cho Tháng Cụ Thể</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={countOrderMonth}>
+          <XAxis dataKey="type" />
+          <YAxis width={80} tickFormatter={(value) => `${value} đ`} />
+          <Tooltip />
+          <Legend />
+          <CartesianGrid strokeDasharray="3 3" />
+          <Bar dataKey="orders" fill="#8884d8" name="Số Đơn Hàng">
+            <LabelList dataKey="orders" position="top" />
+          </Bar>
+          <Bar dataKey="revenue" fill="#82ca9d" name="Doanh Thu">
+            <LabelList dataKey="revenue" position="top" />
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer> */}
+    </Box>
         </SimpleGrid>
       </Box>
     </Box>

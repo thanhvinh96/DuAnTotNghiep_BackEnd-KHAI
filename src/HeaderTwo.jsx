@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import query from 'jquery';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { CategoryController } from '../../controller/categoryController.tsx';
-import Logo from 'F.png'
 
 const HeaderTwo = ({ category }) => {
     const [scroll, setScroll] = useState(false)
@@ -157,11 +156,11 @@ const HeaderTwo = ({ category }) => {
                         <ul className="flex-align flex-wrap d-none d-md-flex" style={{ marginLeft: '90px' }}>
                             <li className="border-right-item text-white text-sm hover-text-decoration-underline py-8 flex-align gap-6" >
                                 <i className="ph ph-phone" />
-                                0879594661
+                                0898389790
                             </li>
                             <li className="border-right-item text-white text-sm hover-text-decoration-underline py-8 flex-align gap-6" >
                                 <i className="ph ph-envelope" />
-                                khaidmps34940@fpt.edu.vn
+                                Phamthanhvinh59700@gmail.com
                             </li>
                         </ul>
                         <ul className="header-top__right flex-align flex-wrap">
@@ -183,7 +182,7 @@ const HeaderTwo = ({ category }) => {
                         {/* Logo Start */}
                         <div className="logo">
                             <Link to="/" className="link">
-                                <img src={Logo} alt="Logo" />
+                                <img src="assets/images/logo/F.png" alt="Logo" />
                             </Link>
                         </div>
                         <form action="#" className="flex-align flex-wrap form-location-wrapper">
@@ -281,7 +280,7 @@ const HeaderTwo = ({ category }) => {
                                     </button>
                                     <div className="logo px-16 d-lg-none d-block">
                                         <Link to="/" className="link">
-                                            <img src={Logo} alt="Logo" />
+                                            <img src="assets/images/logo/F.png" alt="Logo" />
                                         </Link>
                                     </div>
                                     <ul className="scroll-sm p-0 py-8 w-300 max-h-400 overflow-y-auto">
@@ -328,7 +327,7 @@ const HeaderTwo = ({ category }) => {
                                     </button>
                                     <div className="logo px-16 d-lg-none d-block">
                                         <Link to="/" className="link">
-                                            <img src={Logo} alt="Logo" />
+                                            <img src="assets/images/logo/F.png" alt="Logo" />
                                         </Link>
                                     </div>
                                     <ul className="scroll-sm p-0 py-8 w-300 max-h-400 overflow-y-auto">

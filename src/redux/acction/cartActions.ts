@@ -1,4 +1,4 @@
-import { ADD_TO_CART, REMOVE_FROM_CART,LOAD_CART,UPDATE_QUANTITY } from '../acction/acctiontype.ts';
+import { ADD_TO_CART, REMOVE_FROM_CART,CLEAR_CART,UPDATE_QUANTITY } from '../acction/acctiontype.ts';
 import { Product  } from './type';
 
 
@@ -59,3 +59,14 @@ export const updateProductQuantity = (productId: number, newQuantity: number) =>
     };
 };
 
+export const clearCart = () => {
+    return (dispatch: any) => {
+      // Clear cart in localStorage
+      localStorage.removeItem('cart');
+      // Dispatch the action to update the store
+      dispatch({
+        type: CLEAR_CART,
+        payload: [], // Empty array, as the cart is now cleared
+      });
+    };
+  };

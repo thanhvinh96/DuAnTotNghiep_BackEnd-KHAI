@@ -82,16 +82,16 @@ const ShopPage = () => {
         console.log('selectedCategory: ' + selectedCategory);
         console.log('searchTerm: ' + searchTerm);
         console.log('priceRange: ', priceRange); // In ra khoảng giá hiện tại
-    
+
         // Điều kiện lọc theo danh mục, tên sản phẩm và khoảng giá
         return (
             (selectedCategory ? product.CategoryID === selectedCategory : true) &&
-                (productFromURL ? product.ProductName.toLowerCase().includes(productFromURL.toLowerCase()) : true) && // Lọc theo productname từ URL
-                product.ProductName.toLowerCase().includes(searchTerm.toLowerCase()) && // Lọc theo tên sản phẩm từ searchTerm
-                product.Price >= priceRange[0] && product.Price <= priceRange[1] // Lọc theo khoảng giá
+            (productFromURL ? product.ProductName.toLowerCase().includes(productFromURL.toLowerCase()) : true) && // Lọc theo productname từ URL
+            product.ProductName.toLowerCase().includes(searchTerm.toLowerCase()) && // Lọc theo tên sản phẩm từ searchTerm
+            product.Price >= priceRange[0] && product.Price <= priceRange[1] // Lọc theo khoảng giá
         );
     });
-    
+
     console.log("Filtered products:", filteredProducts); // Console log sản phẩm đã lọc
 
     // Tính toán các chỉ số cho phân trang
@@ -170,37 +170,30 @@ const ShopPage = () => {
                                 </div>
                                 <div className="shop-sidebar__box border border-gray-100 rounded-8 p-32 mb-32">
 
-                                <div className="custom--range">
-    <h6 className="text-xl border-bottom border-gray-100 pb-24 mb-24">
-        Lọc Về Giá
-    </h6>
-    <ReactSlider
-        className="horizontal-slider"
-        thumbClassName="example-thumb"
-        trackClassName="example-track"
-        value={priceRange} // Giá trị hiện tại của slider
-        onChange={setPriceRange} // Cập nhật giá trị khoảng giá khi kéo
-        ariaLabel={['Lower thumb', 'Upper thumb']}
-        pearling
-        min={0} // Giá trị tối thiểu
-        max={100000000000} // Giá trị tối đa
-        minDistance={100000} // Khoảng cách tối thiểu giữa hai thumb (100,000 VND)
-    />
-    <div className="price-range-labels">
-        <span className="price-range-labels-price">
-            Giá: {priceRange[0].toLocaleString('vi-VN')}₫ - {priceRange[1].toLocaleString('vi-VN')}₫
-        </span>
-    </div>
-    <br />
-</div>
-
-
+                                    <div className="custom--range">
+                                        <h6 className="text-xl border-bottom border-gray-100 pb-24 mb-24">
+                                            Lọc Về Giá
+                                        </h6>
+                                        <ReactSlider
+                                            className="horizontal-slider"
+                                            thumbClassName="example-thumb"
+                                            trackClassName="example-track"
+                                            value={priceRange} // Giá trị hiện tại của slider
+                                            onChange={setPriceRange} // Cập nhật giá trị khoảng giá khi kéo
+                                            ariaLabel={['Lower thumb', 'Upper thumb']}
+                                            pearling
+                                            min={0} // Giá trị tối thiểu
+                                            max={1000000} // Giá trị tối đa
+                                            minDistance={10000} // Khoảng cách tối thiểu giữa hai thumb (10,000 VND)
+                                        />
+                                        <div className="price-range-labels">
+                                            <span className="price-range-labels-price">
+                                                Giá: {priceRange[0].toLocaleString('vi-VN')}₫ - {priceRange[1].toLocaleString('vi-VN')}₫
+                                            </span>
+                                        </div>
+                                        <br />
+                                    </div>
                                 </div>
-
-
-
-
-
                             </div>
                         </div>
                         {/* Sidebar End */}
@@ -209,23 +202,25 @@ const ShopPage = () => {
                             {/* Top Start */}
                             <div className="flex-between gap-16 flex-wrap mb-40 ">
                                 <span className="text-gray-900">Hiển thị 1-20 của 85 kết quả
-</span>
+                                </span>
                                 <div className="position-relative flex-align gap-16 flex-wrap">
                                     <div className="list-grid-btns flex-align gap-16">
                                         <button onClick={() => setGrid(true)}
                                             type="button"
-                                            className={`w-44 h-44 flex-center border rounded-6 text-2xl list-btn border-gray-100 ${grid === true && "border-main-600 text-white bg-main-600"}`}
+                                            style={{backgroundColor:'green'}}
+                                            className={`w-44 h-44 flex-center border rounded-6 text-2xl list-btn border-gray-100 ${grid === true && "border-main-600 text-white"}`}
                                         >
                                             <i className="ph-bold ph-list-dashes" />
                                         </button>
                                         <button onClick={() => setGrid(false)}
                                             type="button"
-                                            className={`w-44 h-44 flex-center border rounded-6 text-2xl grid-btn border-gray-100 ${grid === false && "border-main-600 text-white bg-main-600"}`}
+                                            style={{backgroundColor:'green'}}
+                                            className={`w-44 h-44 flex-center border rounded-6 text-2xl grid-btn border-gray-100 ${grid === false && "border-main-600 text-white"}`}
                                         >
                                             <i className="ph ph-squares-four" />
                                         </button>
                                     </div>
-                                  
+
                                     <button onClick={sidebarController}
                                         type="button"
                                         className="w-44 h-44 d-lg-none d-flex flex-center border border-gray-100 rounded-6 text-2xl sidebar-btn"
@@ -244,7 +239,7 @@ const ShopPage = () => {
                                         >
                                             <div className="product-card__thumb flex-center rounded-8 bg-gray-50 position-relative">
                                                 <img
-                                                    src={`http://localhost:3000/uploads/${product.OtherImages[0]}`} // Hiển thị ảnh đầu tiên trong OtherImages
+                                                    src={product.OtherImages[0]} // Hiển thị ảnh đầu tiên trong OtherImages
                                                     alt={product.ProductName}
                                                     className="w-auto max-w-unset" // Có thể bỏ nếu bạn đã định nghĩa CSS ở trên
                                                 />
@@ -290,7 +285,7 @@ const ShopPage = () => {
                                 </li>
                                 {[...Array(Math.ceil(dataProduct.length / productsPerPage)).keys()].map(page => (
                                     <li className={`page-item ${currentPage === page + 1 ? 'active' : ''}`} key={page}>
-                                        <Link className="page-link" to="#" onClick={() => setCurrentPage(page + 1)}>
+                                        <Link className="page-link"  to="#" onClick={() => setCurrentPage(page + 1)}>
                                             {page + 1}
                                         </Link>
                                     </li>

@@ -5,7 +5,7 @@ import { getCountdown } from '../helper/Countdown';
 
 const ProductDetailsTwo = () => {
     const [timeLeft, setTimeLeft] = useState(getCountdown());
-    const getDataProductById = async ()=>{
+    const getDataProductById = async () => {
         console.log('show data');
     }
     useEffect(() => {
@@ -122,7 +122,7 @@ const ProductDetailsTwo = () => {
                                                     <i className="ph-fill ph-star" />
                                                 </span>
                                             </div>
-                                            
+
                                         </div>
                                         <span className="text-sm fw-medium text-gray-500">|</span>
                                         <span className="text-gray-900">
@@ -262,7 +262,7 @@ const ProductDetailsTwo = () => {
                             >
                                 Buy Now
                             </Link>
-                           
+
                             <div className="mt-32">
                                 <div className="px-32 py-16 rounded-8 border border-gray-100 flex-between gap-8">
                                     <Link to="#" className="d-flex text-main-600 text-28">
@@ -337,7 +337,7 @@ const ProductDetailsTwo = () => {
                                         Description
                                     </button>
                                 </li>
-                               
+
                             </ul>
                             <Link
                                 to="#"

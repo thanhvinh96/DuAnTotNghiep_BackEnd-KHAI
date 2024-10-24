@@ -20,8 +20,8 @@ import {
 } from "@chakra-ui/react";
 import Swal from 'sweetalert2'; // Nhập SweetAlert2
 
-import {ProductController} from '../../controller/productController.tsx';
-import {CategoryController} from '../../controller/categoryController.tsx';
+import { ProductController } from '../../controller/productController.tsx';
+import { CategoryController } from '../../controller/categoryController.tsx';
 import { any } from 'micromatch';
 export default function ProductManagement() {
     interface DataTable {
@@ -34,7 +34,7 @@ export default function ProductManagement() {
         Priority: string;
         ShortDescription: string;
         ProductID: string; // Change this to 'string'
-        SoldQuantity:Number;
+        SoldQuantity: Number;
     }
 
     const [dataTableProduc, setDataTableProduc] = useState<DataTable[]>([]);
@@ -46,7 +46,7 @@ export default function ProductManagement() {
 
     const showData = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/products/', {
+            const response = await fetch('http://localhost:3000/api/products-notstatus', {
                 method: 'GET',
             });
 
@@ -60,10 +60,10 @@ export default function ProductManagement() {
             console.error('Error creating product:', error);
         }
     };
-    const [dataCategory,getdataCategory] = useState([]);
+    const [dataCategory, getdataCategory] = useState([]);
     const showdataCategory = async () => {
         try {
-            const res:any = await CategoryController.fetchCategories(); // Đảm bảo bạn đang sử dụng await ở đây
+            const res: any = await CategoryController.fetchCategories(); // Đảm bảo bạn đang sử dụng await ở đây
             if (Array.isArray(res)) { // Kiểm tra xem res có phải là mảng không
                 console.log(res)
                 getdataCategory(res); // Cập nhật state với danh mục
@@ -92,7 +92,7 @@ export default function ProductManagement() {
         );
     });
 
-    const currentItems:any = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems: any = filteredData.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
     // Hàm chuyển đổi thời gian
@@ -112,7 +112,7 @@ export default function ProductManagement() {
         try {
             // Gọi hàm updateProductStatus và chờ kết quả
             const res = await ProductController.updateProductStatus(id, status);
-            
+
             // Nếu thành công, hiển thị modal thông báo thành công
             Swal.fire({
                 title: 'Success!',
@@ -134,7 +134,7 @@ export default function ProductManagement() {
         try {
             // Gọi hàm deleteProductByID và chờ kết quả
             await ProductController.deleteProductByID(id);
-            
+
             // Nếu thành công, hiển thị modal thông báo thành công
             Swal.fire({
                 title: 'Success!',
@@ -152,17 +152,18 @@ export default function ProductManagement() {
             });
         }
     };
-    
+
     return (
         <Box pt={{ base: "20px", md: "80px", xl: "80px" }}>
             <Card p={5} mb={{ base: "0px", lg: "40px" }}>
                 <div className="card-header">
-                    <Text fontSize="xl" fontWeight="bold">DANH SÁCH SẢN PHẨM</Text>
+                    {/* <Text fontSize="xl" fontWeight="bold">DANH SÁCH SẢN PHẨM</Text> */}
                     <Button
                         as="a"
                         href="/admin/products-create"
                         colorScheme="blue"
                         size="sm"
+                        borderRadius="md" // Hình vuông với góc bo nhẹ
                     >
                         <i className="ri-add-line fw-semibold align-middle"></i> Thêm sản phẩm mới
                     </Button>
@@ -181,16 +182,16 @@ export default function ProductManagement() {
                     <FormControl>
                         <FormLabel>Chọn danh mục</FormLabel>
                         <Select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-                <option value="">Tất cả danh mục</option>
-                {dataCategory.map((category:any) => (
-                    <option key={category.CategoryID} value={category.CategoryName}>
-                        {category.CategoryName}
-                    </option>
-                ))}
-            </Select>
+                            value={selectedCategory}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
+                        >
+                            <option value="">Tất cả danh mục</option>
+                            {dataCategory.map((category: any) => (
+                                <option key={category.CategoryID} value={category.CategoryName}>
+                                    {category.CategoryName}
+                                </option>
+                            ))}
+                        </Select>
                     </FormControl>
                     <FormControl>
                         <FormLabel>Trạng thái</FormLabel>
@@ -206,46 +207,50 @@ export default function ProductManagement() {
                 </Grid>
 
                 <Box overflowX="auto" mt={4}>
-                <Text fontWeight="bold">Hiển thị từ <strong>{indexOfFirstItem + 1}</strong> đến <strong>{indexOfLastItem > filteredData.length ? filteredData.length : indexOfLastItem}</strong> của <strong>{filteredData.length}</strong> sản phẩm</Text>
-                <Table variant="striped" colorScheme="teal">
-                <Thead>
+                    <Text fontWeight="bold">Hiển thị từ <strong>{indexOfFirstItem + 1}</strong> đến <strong>{indexOfLastItem > filteredData.length ? filteredData.length : indexOfLastItem}</strong> của <strong>{filteredData.length}</strong> sản phẩm</Text>
+                    <Table variant="striped" colorScheme="teal">
+                        <Thead>
                             <Tr>
-                            <Th color="black">Ưu tiên</Th>
-    <Th color="black">Thao tác</Th>
-    <Th color="black">Sản phẩm</Th>
-    <Th color="black">Trạng Thái</Th>
-    <Th color="black">Chuyên mục</Th>
-    <Th color="black">Số Lượng Đã Bán</Th>
-    <Th color="black">Giá bán</Th>
-    <Th color="black">Thời gian</Th>
+                                <Th color="black">Ưu tiên</Th>
+                                <Th color="black">Thao tác</Th>
+                                <Th color="black">Sản phẩm</Th>
+                                <Th color="black">Trạng Thái</Th>
+                                <Th color="black">Chuyên mục</Th>
+                                <Th color="black">Số Lượng Đã Bán</Th>
+                                <Th color="black">Giá bán</Th>
+                                <Th color="black">Thời gian</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {currentItems.map((product:any, index:any) => (
+                            {currentItems.map((product: any, index: any) => (
                                 <Tr key={index}>
                                     <Td>{product.Priority}</Td>
                                     <Td>
-    <Box display="flex" flexDirection="column" gap="20px"> {/* Added Box for layout and spacing */}
-        <Button
-            as="a"
-            href={`/admin/products-edit?id=${product.ProductID}`}
-            colorScheme="yellow"
-            size="sm"
-            width="100%" // Ensures buttons are the same width
-        >
-            <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
-        </Button>
-        <Button
-    onClick={() => handleHide(product.ProductID, product.status === 'Active' ? 'SHUTDOWN' : 'Active')} // Thay đổi status dựa trên giá trị hiện tại
-    colorScheme="blue"
-    size="sm"
-    width="100%" // Đảm bảo các nút có cùng chiều rộng
->
-    <i className={`fa-solid ${product.status === 'Active' ? "fa-eye-slash" : "fa-eye"}`}></i> 
-    {product.status === 'SHUTDOWN' ? "Hiển thị sản phẩm" : "Ẩn sản phẩm"}  {/* Điều kiện để hiển thị đúng text */}
-</Button>
+                                        <Box display="flex" flexDirection="column" gap="20px"> {/* Added Box for layout and spacing */}
+                                            <Button
+                                                as="a"
+                                                href={`/admin/products-edit?id=${product.ProductID}`}
+                                                colorScheme="yellow"
+                                                size="sm"
+                                                width="100%" // Ensures buttons are the same width
+                                                borderRadius="md" // Hình vuông với góc bo nhẹ
 
-        {/* <Button
+                                            >
+                                                <i className="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+                                            </Button>
+                                            <Button
+                                                onClick={() => handleHide(product.ProductID, product.status === 'Active' ? 'SHUTDOWN' : 'Active')} // Thay đổi status dựa trên giá trị hiện tại
+                                                colorScheme="blue"
+                                                size="sm"
+                                                width="100%" // Đảm bảo các nút có cùng chiều rộng
+                                                borderRadius="md" // Hình vuông với góc bo nhẹ
+
+                                            >
+                                                <i className={`fa-solid ${product.status === 'Active' ? "fa-eye-slash" : "fa-eye"}`}></i>
+                                                {product.status === 'SHUTDOWN' ? "Hiển thị sản phẩm" : "Ẩn sản phẩm"}  {/* Điều kiện để hiển thị đúng text */}
+                                            </Button>
+
+                                            {/* <Button
             onClick={() => handleDelete(product.ProductID)} // Hàm xử lý xóa sản phẩm
             colorScheme="red"
             size="sm"
@@ -253,8 +258,8 @@ export default function ProductManagement() {
         >
             <i className="fa-solid fa-trash"></i> Xóa
         </Button> */}
-    </Box>
-</Td>
+                                        </Box>
+                                    </Td>
 
 
                                     <Td>
@@ -263,16 +268,19 @@ export default function ProductManagement() {
                                         </Text>
                                     </Td>
                                     <Td>
-    <Badge colorScheme={product.status === 'SHUTDOWN' ? "green" : "gray"}>
-        {product.status === 'SHUTDOWN' ? "Đang Ân" : "Hoạt Động"}
-    </Badge>
-</Td>
+                                    <Badge colorScheme={product.status.trim().toLowerCase() === 'active' ? "green" : "red"}>
+    Trạng thái sản phẩm: {product.status.trim().toLowerCase() === 'active' ? "Hoạt động" : "Đang ẩn"}
+</Badge>
+
+
+
+                                    </Td>
 
                                     <Td><Badge colorScheme="blue">{product.CategoryName}</Badge></Td>
                                     <Td>
-                                    <Td>
-    <Text>{product.TotalQuantitySold}</Text>
-</Td>
+                                        <Td>
+                                            <Text>{product.TotalQuantitySold}</Text>
+                                        </Td>
 
                                     </Td>
                                     <Td>

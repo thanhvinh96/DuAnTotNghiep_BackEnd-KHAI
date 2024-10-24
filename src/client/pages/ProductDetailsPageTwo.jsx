@@ -313,40 +313,40 @@ const ProductDetailsPageTwo = () => {
                     <div className="row gy-4">
                         <div className="col-xl-9">
                             <div className="row gy-4">
-                            <div className="col-xl-6">
-    <div className="product-details__left">
-        <div className="product-details__thumb-slider border border-gray-100 rounded-16">
-            <div className="">
-                <div className="product-details__thumb flex-center h-100">
-                    <img
-                        src={mainImage ? `http://localhost:3000/uploads/${mainImage}` : 'http://localhost:3000/uploads/default-image.png'}
-                        alt="Main Product"
-                    />
-                </div>
-            </div>
-        </div>
-        <div className="mt-24">
-            <div className="product-details__images-slider">
-                <Slider {...settingsThumbs}>
-                    {product?.OtherImages && product.OtherImages.length > 0 ? (
-                        product.OtherImages.map((image, index) => (
-                            <div key={index} style={{ width: '100%', textAlign: 'center' }}>
-                                <img
-                                    src={`http://localhost:3000/uploads/${image}`}
-                                    alt={`Other product view ${index + 1}`}
-                                    onClick={() => setMainImage(image)}
-                                    style={{ maxWidth: '100%', height: 'auto' }}
-                                />
-                            </div>
-                        ))
-                    ) : (
-                        <p>No additional images available.</p>
-                    )}
-                </Slider>
-            </div>
-        </div>
-    </div>
-</div>
+                                <div className="col-xl-6">
+                                    <div className="product-details__left">
+                                        <div className="product-details__thumb-slider border border-gray-100 rounded-16">
+                                            <div className="">
+                                                <div className="product-details__thumb flex-center h-100">
+                                                    <img
+                                                        src={mainImage}
+                                                        alt="Main Product"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="mt-24">
+                                            <div className="product-details__images-slider">
+                                                <Slider {...settingsThumbs}>
+                                                    {product?.OtherImages && product.OtherImages.length > 0 ? (
+                                                        product.OtherImages.map((image, index) => (
+                                                            <div key={index} style={{ width: '100%', textAlign: 'center' }}>
+                                                                <img
+                                                                    src={image}
+                                                                    alt={`Other product view ${index + 1}`}
+                                                                    onClick={() => setMainImage(image)}
+                                                                    style={{ maxWidth: '100%', height: 'auto' }}
+                                                                />
+                                                            </div>
+                                                        ))
+                                                    ) : (
+                                                        <p>No additional images available.</p>
+                                                    )}
+                                                </Slider>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div className="col-xl-6">
                                     <div className="product-details__content">
@@ -425,9 +425,9 @@ const ProductDetailsPageTwo = () => {
                                                 <h6 className=" mb-0">{formatCurrency(product.Price)}</h6>
 
                                             </div>
-                                           
+
                                         </div>
-                                      
+
                                     </div>
                                 </div>
                             </div>
@@ -917,7 +917,7 @@ const ProductDetailsPageTwo = () => {
                 </div>
             </section>
             {/* NewArrivalTwo */}
-            <NewArrivalTwo />
+            {/* <NewArrivalTwo /> */}
 
             {/* ShippingOne */}
             <ShippingOne />
