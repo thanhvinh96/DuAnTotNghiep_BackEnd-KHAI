@@ -25,19 +25,16 @@ const HeaderTwo = ({ category }) => {
         };
     }, []);
     const tokenUser = localStorage.getItem('tokenUser'); // Lấy token từ localStorage
-
     // Set the default language
     const [selectedLanguage, setSelectedLanguage] = useState("Eng");
     const handleLanguageChange = (language) => {
         setSelectedLanguage(language);
     };
-
     // Set the default currency
     const [selectedCurrency, setSelectedCurrency] = useState("USD");
     const handleCurrencyChange = (currency) => {
         setSelectedCurrency(currency);
     };
-
     // Mobile menu support
     const [menuActive, setMenuActive] = useState(false)
     const [activeIndex, setActiveIndex] = useState(null);
@@ -47,14 +44,11 @@ const HeaderTwo = ({ category }) => {
     const handleMenuToggle = () => {
         setMenuActive(!menuActive);
     };
-
-
     // Search control support
     const [activeSearch, setActiveSearch] = useState(false)
     const handleSearchToggle = () => {
         setActiveSearch(!activeSearch);
     };
-
     // category control support
     const [activeCategory, setActiveCategory] = useState(false)
     const handleCategoryToggle = () => {
@@ -66,10 +60,14 @@ const HeaderTwo = ({ category }) => {
     };
     const [datacategory, setdatacategory] = useState([]);
     const showdataCategory = async () => {
-        const data = await CategoryController.fetchCategories();
-        setdatacategory(data);
-    }
-
+        try {
+            const data = await CategoryController.fetchCategories();
+            const sortedData = data.sort((a, b) => a.location - b.location);
+            setdatacategory(sortedData);
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    };
     useEffect(() => {
         // showdataProduct();
         showdataCategory();
@@ -85,7 +83,6 @@ const HeaderTwo = ({ category }) => {
             navigate(`/shop?productname=${searchTerm}`); // Điều hướng đến trang /shop với query productname
         }
     };
-
     return (
         <>
             <div className="overlay " />
@@ -94,7 +91,7 @@ const HeaderTwo = ({ category }) => {
             <form action="#" className={`search-box ${activeSearch && "active"}`}>
                 <button onClick={handleSearchToggle}
                     type="button"
-                    className="search-box__close position-absolute inset-block-start-0 inset-inline-end-0 m-16 w-48 h-48 border border-gray-100 rounded-circle flex-center text-danger hover-text-gray-800 hover-bg-white text-2xl transition-1"
+                    className="search-box__close position-absolute inset-block-start-0 inset-inline-end-0 m-16 w-48 h-48 border border-gray-100 rounded-circle flex-center text-white hover-text-gray-800 hover-bg-white text-2xl transition-1"
                 >
                     <i className="ph ph-x" />
                 </button>
@@ -186,13 +183,19 @@ const HeaderTwo = ({ category }) => {
                                 <img src={Logo} alt="Logo" />
                             </Link>
                         </div>
-                        <form action="#" className="flex-align flex-wrap form-location-wrapper">
+                        <form
+                            action="#"
+                            className="flex-align flex-wrap form-location-wrapper"
+                            onSubmit={handleSearch}
+                        >
                             <div className="search-category d-flex h-48 select-border-end-0 radius-end-0 search-form d-sm-flex d-none">
                                 <div className="search-form__wrapper position-relative">
                                     <input
                                         type="text"
                                         className="search-form__input common-input py-13 ps-16 pe-18 rounded-end-pill pe-44"
-                                        placeholder="Search for a product or brand"
+                                        placeholder="Tìm Sản Phẩm Theo Yêu Cầu"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)} // Cập nhật giá trị tìm kiếm
                                     />
                                     <button
                                         type="submit"
@@ -306,7 +309,7 @@ const HeaderTwo = ({ category }) => {
                                     </ul>
                                 </div>
                             </div>
-                            <div className={`category main  on-hover-item text-white ${category === true ? "d-block" : "d-none"}`} style={{backgroundColor:'green'}}>
+                            <div className={`category main  on-hover-item text-white ${category === true ? "d-block" : "d-none"}`} style={{ backgroundColor: 'green' }}>
                                 <button
                                     type="button"
                                     className="category__button flex-align gap-8 fw-medium p-16 border-end border-start border-gray-100 text-white"
@@ -314,7 +317,7 @@ const HeaderTwo = ({ category }) => {
                                     <span className="icon text-2xl d-xs-flex d-none">
                                         <i className="ph ph-dots-nine" />
                                     </span>
-                                    <span className="d-sm-flex d-none">Danh Mục</span> 
+                                    <span className="d-sm-flex d-none">Danh Mục</span>
                                     <span className="arrow-icon text-xl d-flex">
                                         <i className="ph ph-caret-down" />
                                     </span>

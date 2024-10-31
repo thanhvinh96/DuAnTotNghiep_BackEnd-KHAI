@@ -132,7 +132,7 @@ const DealsOne = () => {
                                                 New%{" "}
                                             </span>
                                             <img
-                                                src={product.OtherImages[0]} // Cập nhật với URL ảnh đúng của sản phẩm
+                                                src={`http://localhost:3000/uploads/${product.OtherImages[0]}`}// Cập nhật với URL ảnh đúng của sản phẩm
                                                 alt={product.ProductName}
                                                 className="w-auto max-w-unset"
                                             />
